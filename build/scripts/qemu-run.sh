@@ -120,7 +120,7 @@ if [ -z "$ISO_PATH" ]; then
     REAL_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
     SCRIPT_DIR="$(dirname "$REAL_SCRIPT")"
     BUILD_DIR="$(dirname "$SCRIPT_DIR")"
-    ISO_PATH="$BUILD_DIR/output/hacknow-os-0.1-alpha.iso"
+    ISO_PATH="$BUILD_DIR/output/hacknow-os-amd64.hybrid.iso"
 fi
 
 if [ ! -f "$ISO_PATH" ]; then

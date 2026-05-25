@@ -22,22 +22,31 @@ sudo apt install live-build debootstrap squashfs-tools xorriso
 ### 1-usul: `build.sh` orqali (tavsiya etiladi)
 
 ```bash
-git clone https://github.com/hacknow-uz/hacknow-os-build.git
-cd hacknow-os-build
+git clone https://github.com/HackNow-uz/hacknow-os.git
+cd hacknow-os/build
 sudo ./build.sh all
 ```
 
 ### 2-usul: `make` orqali
 
 ```bash
+cd hacknow-os/build
 sudo make build
 ```
 
 ### 3-usul: To'g'ridan-to'g'ri live-build
 
 ```bash
+cd hacknow-os/build
 sudo lb config
 sudo lb build
+```
+
+### 4-usul: Docker orqali (host'da `lb` o'rnatilmagan bo'lsa)
+
+```bash
+cd hacknow-os/build
+bash docker-build.sh
 ```
 
 ## Build bosqichlari
@@ -50,20 +59,27 @@ sudo lb build
 
 ## Papka tuzilmasi
 
+Build katalogi monorepo ichida (`hacknow-os/build/`). Branding va installer
+yondosh sub-katalogdan keladi.
+
 ```
-hacknow-os-build/
-├── auto/                    # live-build avtomatik skriptlar
-│   ├── config               # lb config parametrlari
-│   ├── build                # lb build wrapper
-│   └── clean                # lb clean wrapper
-├── config/
-│   ├── package-lists/       # O'rnatiluvchi paketlar ro'yxati
-│   ├── includes.chroot/     # Live fayl sistemasiga qo'shiladigan fayllar
-│   ├── hooks/live/          # Build jarayonida ishlaydigan hook skriptlar
-│   └── bootloaders/         # GRUB konfiguratsiyasi
-├── build.sh                 # Qulay build skripti
-├── Makefile                 # Make buyruqlari
-└── .github/workflows/       # GitHub Actions CI
+hacknow-os/
+├── build/                   # bu katalog
+│   ├── auto/                # live-build avto-skriptlari (config, build, clean)
+│   ├── config/
+│   │   ├── package-lists/   # o'rnatiluvchi paketlar
+│   │   ├── includes.chroot/ # live FS ga qo'shiladigan fayllar (sync chiqishi)
+│   │   ├── hooks/live/      # build hook skriptlari
+│   │   └── bootloaders/     # GRUB konfiguratsiyasi
+│   ├── scripts/             # yordamchi skriptlar (sync, qemu-run)
+│   ├── build.sh             # asosiy build entry point
+│   ├── docker-build.sh      # Docker konteynerida build
+│   ├── sync.sh              # branding + installer sync (orchestrator)
+│   └── Makefile             # make targetlari
+├── branding/                # GRUB, Plymouth, GTK, wallpaper, ikonkalar
+├── installer/               # Calamares brending va i18n
+├── packages/                # apt repo va toolsets
+└── tools/                   # /usr/local/bin skriptlari
 ```
 
 ## O'rnatilgan vositalar

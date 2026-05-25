@@ -19,17 +19,19 @@ fix/*         — tuzatishlar
 release/*     — relizga tayyorgarlik
 ```
 
-## Qaysi repoga hissa qo'shish kerak?
+## Qaysi katalogga hissa qo'shish kerak?
 
-| Nima qilmoqchisiz? | Repo |
-|---------------------|------|
-| Yangi tool qo'shish | `hacknow-os-packages` |
-| Maxsus tool yozish | `hacknow-os-tools` |
-| ISO build tuzatish | `hacknow-os-build` |
-| Dizayn/wallpaper | `hacknow-os-branding` |
-| Installer tuzatish | `hacknow-os-installer` |
-| Hujjat yozish | `hacknow-os-docs` |
-| Roadmap/umumiy | `hacknow-os` (shu repo) |
+Monorepo strukturasida hammasi shu repo ichida:
+
+| Nima qilmoqchisiz? | Katalog (yoki alohida repo) |
+|---------------------|-----------------------------|
+| Yangi tool qo'shish | `packages/` |
+| Maxsus skript yozish | `tools/` |
+| ISO build tuzatish | `build/` |
+| Dizayn/wallpaper/GRUB | `branding/` |
+| Installer (Calamares) tuzatish | `installer/` |
+| Foydalanuvchi hujjati | [hacknow-os-docs](https://github.com/HackNow-uz/hacknow-os-docs) (alohida repo) |
+| Sayt (os.hacknow.uz) | [hacknow-os-web](https://github.com/HackNow-uz/hacknow-os-web) (alohida repo) |
 
 ## Commit xabarlari
 
@@ -51,14 +53,15 @@ docs(readme): tool ro'yxati yangilandi
 ## Mahalliy build
 
 ```bash
-# Barcha repolarni clone qilish
-for repo in hacknow-os-build hacknow-os-packages hacknow-os-tools hacknow-os-branding hacknow-os-installer; do
-  git clone https://github.com/HackNow-uz/$repo.git
-done
+# Monorepo'ni clone qilish
+git clone https://github.com/HackNow-uz/hacknow-os.git
+cd hacknow-os/build
 
 # ISO yaratish (Debian live-build kerak)
-cd hacknow-os-build
-sudo lb build
+sudo bash build.sh all
+
+# Yoki Docker orqali (host'da lb o'rnatilmagan bo'lsa):
+bash docker-build.sh
 ```
 
 ## Aloqa

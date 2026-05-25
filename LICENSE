@@ -1,0 +1,34 @@
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ HackNow OS
+ Copyright (C) 2025-2026 HackNow Team <hacknow.uz@gmail.com>
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+================================================================================
+
+To'liq litsenziya matni:
+  https://www.gnu.org/licenses/gpl-3.0.txt
+
+SPDX-License-Identifier: GPL-3.0-or-later
+
+================================================================================
+
+Tarkibida turli paketlar (Debian, third-party tools) o'z litsenziyalari ostida
+keladi. ISO ichidagi har bir paketning litsenziyasini /usr/share/doc/<paket>/
+katalogidan ko'rishingiz mumkin.
+
+Brending materiallari (logo, wallpaper, GRUB/Plymouth tema) — HackNow Team
+muallifligi ostida, GPL-3.0 yoki mos keluvchi Creative Commons litsenziyasida.

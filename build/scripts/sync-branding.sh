@@ -24,10 +24,11 @@ err()  { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 # === Branding mavjudligini tekshirish ===
 if [ ! -d "$BRAND_DIR" ]; then
-    err "Branding repo topilmadi: $BRAND_DIR
+    err "Branding katalogi topilmadi: $BRAND_DIR
 
-Belgilash:
-    BRAND_DIR=/yo'l/hacknow-os-branding bash sync-branding.sh"
+Monorepo strukturasi kutiladi: hacknow-os/branding/
+Override qilish uchun:
+    BRAND_DIR=/absolyut/yo'l/branding bash sync-branding.sh"
 fi
 
 log "Branding: $BRAND_DIR"
@@ -66,11 +67,24 @@ done
 
 # === 3. GRUB theme ===
 log "GRUB theme sync qilinmoqda..."
-mkdir -p "$INCLUDES/usr/share/grub/themes/hacknow"
-if [ -f "$BRAND_DIR/grub/hacknow/hacknow-grub-bg.png" ]; then
-    cp "$BRAND_DIR/grub/hacknow/hacknow-grub-bg.png" \
-       "$INCLUDES/usr/share/grub/themes/hacknow/background.png"
-    echo "  ✓ background.png"
+GRUB_DST="$INCLUDES/usr/share/grub/themes/hacknow"
+GRUB_SRC="$BRAND_DIR/grub/hacknow"
+mkdir -p "$GRUB_DST"
+if [ -d "$GRUB_SRC" ]; then
+    # background.png — ikkita variant: hacknow-grub-bg.png (eski nom) yoki background.png
+    if [ -f "$GRUB_SRC/hacknow-grub-bg.png" ]; then
+        cp "$GRUB_SRC/hacknow-grub-bg.png" "$GRUB_DST/background.png"
+        echo "  ✓ background.png (hacknow-grub-bg.png'dan)"
+    elif [ -f "$GRUB_SRC/background.png" ]; then
+        cp "$GRUB_SRC/background.png" "$GRUB_DST/background.png"
+        echo "  ✓ background.png"
+    fi
+    # Theme fayllar: logo, select sprites, theme.txt
+    for f in logo.png theme.txt select_c.png select_e.png select_n.png select_ne.png select_nw.png select_s.png select_se.png select_sw.png select_w.png; do
+        if [ -f "$GRUB_SRC/$f" ]; then
+            cp "$GRUB_SRC/$f" "$GRUB_DST/$f"
+        fi
+    done
 fi
 
 # === 4. Plymouth ===

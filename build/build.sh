@@ -4,8 +4,8 @@
 
 set -eo pipefail
 
-GPG_KEY="EE639BAA5A076195"
-RELEASE_DIR="/var/www/releases"
+GPG_KEY="${GPG_KEY:-EE639BAA5A076195}"
+RELEASE_DIR="${RELEASE_DIR:-/var/www/releases}"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
