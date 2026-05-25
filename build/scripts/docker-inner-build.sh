@@ -9,7 +9,7 @@ apt-get install -y -qq live-build debootstrap squashfs-tools xorriso rsync >/dev
 # Build fayllarni Docker ichiga nusxalash (volume mount sekin)
 echo "[*] Build fayllar nusxalanmoqda..."
 mkdir -p /tmp/hacknow-build
-rsync -a --exclude='.git' --exclude='output' --exclude='chroot' --exclude='.build' --exclude='binary' /build/ /tmp/hacknow-build/
+rsync -a --exclude='.git' --exclude='/output' --exclude='/chroot' --exclude='/.build' --exclude='/binary' --exclude='/cache' /build/ /tmp/hacknow-build/
 cd /tmp/hacknow-build
 
 echo "[*] Eski build tozalanmoqda..."
