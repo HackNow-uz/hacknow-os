@@ -22,15 +22,20 @@ echo "[*] ISO build boshlandi..."
 echo "[*] Bu 15-60 daqiqa davom etishi mumkin..."
 lb build 2>&1 | tee /output/build.log
 
-# ISO ni output papkaga nusxalash
-ISO=$(ls -t *.iso 2>/dev/null | head -1)
-if [ -n "$ISO" ]; then
-    cp "$ISO" /output/
-    SIZE=$(du -h "$ISO" | cut -f1)
-    HASH=$(sha256sum "$ISO" | cut -d" " -f1)
+# ISO ni output papkaga kanonik nom bilan nusxalash
+ISO_SRC=$(ls -t *.iso 2>/dev/null | head -1)
+ISO_NAME="hacknow-os-amd64.hybrid.iso"
+if [ -n "$ISO_SRC" ]; then
+    cp "$ISO_SRC" "/output/$ISO_NAME"
+    SIZE=$(du -h "/output/$ISO_NAME" | cut -f1)
+    HASH=$(sha256sum "/output/$ISO_NAME" | cut -d" " -f1)
+    echo "$HASH  $ISO_NAME" > "/output/${ISO_NAME}.sha256"
+    # Host user (UID/GID 1000) ga yozish huquqi berish
+    chmod 644 "/output/$ISO_NAME" "/output/${ISO_NAME}.sha256"
     echo ""
     echo "========================================="
-    echo "  ISO TAYYOR: $ISO"
+    echo "  ISO TAYYOR: $ISO_NAME"
+    echo "  Manba nomi: $ISO_SRC"
     echo "  Hajmi: $SIZE"
     echo "  SHA256: $HASH"
     echo "========================================="

@@ -5,7 +5,7 @@ lb config noauto \
     --architectures amd64 \
     --distribution bookworm \
     --archive-areas "main contrib non-free non-free-firmware" \
-    --debian-installer false \
+    --debian-installer none \
     --debian-installer-gui false \
     --binary-images iso-hybrid \
     --iso-application "HackNow OS" \
@@ -17,7 +17,7 @@ lb config noauto \
     --linux-packages none \
     --linux-flavours none \
     --firmware-chroot false \
-    --bootloader grub \
+    --bootloaders "grub-pc grub-efi" \
     --bootappend-live "boot=live components username=hacknow hostname=hacknow-os" \
     --security false \
     --backports false \
