@@ -14,8 +14,8 @@ lb config noauto \
     --apt-indices false \
     --apt-recommends true \
     --memtest none \
-    --linux-packages none \
-    --linux-flavours none \
+    --linux-packages linux-image \
+    --linux-flavours amd64 \
     --firmware-chroot false \
     --bootloaders "grub-pc grub-efi" \
     --bootappend-live "boot=live components username=hacknow hostname=hacknow-os" \
