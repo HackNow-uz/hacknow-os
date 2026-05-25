@@ -1,0 +1,19 @@
+#!/bin/bash
+# HackNow OS — wallpaper rotator
+# Har 30 daqiqada wallpaperni almashtirib turadi
+
+WALLPAPERS=(
+    /usr/share/backgrounds/hacknow/wallpaper-1.png
+    /usr/share/backgrounds/hacknow/wallpaper-2.png
+)
+
+# Random tanlash
+W="${WALLPAPERS[$RANDOM % ${#WALLPAPERS[@]}]}"
+
+# Barcha monitorlar uchun
+for mon in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep "last-image$"); do
+    xfconf-query -c xfce4-desktop -p "$mon" -s "$W" 2>/dev/null
+done
+
+# xfdesktop reload
+xfdesktop --reload 2>/dev/null &

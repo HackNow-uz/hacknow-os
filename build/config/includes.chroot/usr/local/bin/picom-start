@@ -1,0 +1,21 @@
+#!/bin/sh
+# HackNow OS picom starter
+sleep 4
+
+# GLX (real hardware)
+if picom --backend glx --config ~/.config/picom/picom.conf -b 2>/dev/null; then
+    exit 0
+fi
+
+# xrender (VM/fallback) — blur not supported, omitted intentionally
+exec picom \
+    --backend xrender \
+    --corner-radius 8 \
+    --shadow --shadow-radius 8 --shadow-opacity 0.3 \
+    --fading --fade-in-step 0.06 --fade-out-step 0.06 \
+    --inactive-opacity 0.95 \
+    --no-vsync \
+    --detect-rounded-corners \
+    --detect-client-opacity \
+    --no-blur-background \
+    -b 2>/dev/null || true

@@ -1,0 +1,17 @@
+# === O'zbek tili qo'llab-quvvatlashi ===
+
+# Firefox O'zbek tili
+firefox-esr-l10n-uz
+
+# Imlo tekshiruvchi
+aspell-uz
+
+# Locale va til
+locales
+
+# XFCE klaviatura tartibi indikatori
+xfce4-xkb-plugin
+
+# Klaviatura sozlamalari
+keyboard-configuration
+console-setup

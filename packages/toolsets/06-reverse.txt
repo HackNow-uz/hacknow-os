@@ -1,0 +1,16 @@
+# === Reverse Engineering ===
+
+# --- Debian repos ---
+gdb
+gdb-multiarch
+radare2
+binwalk
+upx-ucl
+ltrace
+strace
+apktool
+
+# --- Custom install ---
+# ghidra             → scripts/install-ghidra.sh
+# pwndbg             → scripts/install-pwndbg.sh
+# binary-ninja       → (commercial, not included)

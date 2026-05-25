@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=HackNow OS
+Description=HackNow OS boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/hacknow
+ScriptFile=/usr/share/plymouth/themes/hacknow/hacknow.script

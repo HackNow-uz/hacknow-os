@@ -1,0 +1,2 @@
+# HackNow OS live session — hacknow user'ga parolsiz sudo
+hacknow ALL=(ALL) NOPASSWD: /usr/bin/calamares

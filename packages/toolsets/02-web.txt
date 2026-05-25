@@ -1,0 +1,17 @@
+# === Web Xavfsizlik ===
+# Veb ilovalar xavfsizlik tekshiruvi
+
+# --- Debian repos ---
+sqlmap
+nikto
+dirb
+wfuzz
+whatweb
+wafw00f
+
+# --- Custom install ---
+# burpsuite-ce       → scripts/install-burpsuite.sh
+# ffuf               → Go install
+# gobuster           → Go install
+# nuclei             → Go install
+# zaproxy            → scripts/install-zap.sh

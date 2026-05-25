@@ -1,0 +1,75 @@
+#!/bin/sh
+# HackNow OS — O'zbek tili, klaviatura, lug'at sozlamalari
+set -e
+
+echo "[HackNow OS] O'zbek til sozlamalari boshlandi..."
+
+# === O'zbek + Rus klaviatura tartibi (Alt+Shift bilan almashtirish) ===
+mkdir -p /etc/default
+cat > /etc/default/keyboard << 'KBD'
+XKBMODEL="pc105"
+XKBLAYOUT="uz,ru"
+XKBVARIANT=","
+XKBOPTIONS="grp:alt_shift_toggle"
+KBD
+
+mkdir -p /etc/X11/xorg.conf.d
+cat > /etc/X11/xorg.conf.d/00-keyboard.conf << 'XKB'
+Section "InputClass"
+    Identifier "keyboard-all"
+    MatchIsKeyboard "on"
+    Option "XkbLayout" "uz,ru"
+    Option "XkbVariant" ","
+    Option "XkbOptions" "grp:alt_shift_toggle"
+EndSection
+XKB
+
+echo "[HackNow OS] Klaviatura: uz,ru (Alt+Shift almashtirish)"
+
+# === Hunspell O'zbek lug'ati (GitHub'dan) ===
+HUNSPELL_DIR="/usr/share/hunspell"
+mkdir -p "$HUNSPELL_DIR"
+
+if [ ! -f "$HUNSPELL_DIR/uz_UZ.dic" ]; then
+    echo "[HackNow OS] Hunspell O'zbek lug'ati yuklanmoqda..."
+    cd /tmp
+    wget -q --timeout=60 --tries=2 \
+        "https://raw.githubusercontent.com/uzbek-net/uz-hunspell/main/uz_UZ.dic" \
+        -O uz_UZ.dic 2>/dev/null || true
+    wget -q --timeout=60 --tries=2 \
+        "https://raw.githubusercontent.com/uzbek-net/uz-hunspell/main/uz_UZ.aff" \
+        -O uz_UZ.aff 2>/dev/null || true
+
+    if [ -s /tmp/uz_UZ.dic ] && [ -s /tmp/uz_UZ.aff ]; then
+        mv /tmp/uz_UZ.dic "$HUNSPELL_DIR/uz_UZ.dic"
+        mv /tmp/uz_UZ.aff "$HUNSPELL_DIR/uz_UZ.aff"
+        ln -sf "$HUNSPELL_DIR/uz_UZ.dic" "$HUNSPELL_DIR/uz.dic" 2>/dev/null || true
+        ln -sf "$HUNSPELL_DIR/uz_UZ.aff" "$HUNSPELL_DIR/uz.aff" 2>/dev/null || true
+        echo "[HackNow OS] Hunspell O'zbek lug'ati o'rnatildi (90000+ so'z)"
+    else
+        echo "[HackNow OS] Hunspell lug'ati yuklab olinmadi (offline build)"
+        rm -f /tmp/uz_UZ.dic /tmp/uz_UZ.aff
+    fi
+fi
+
+# === Kirill lug'ati ham (ixtiyoriy) ===
+if [ ! -f "$HUNSPELL_DIR/uz_UZ_Cyrl.dic" ]; then
+    wget -q --timeout=30 --tries=1 \
+        "https://raw.githubusercontent.com/uzbek-net/uz-hunspell/main/uz_UZ_Cyrl.dic" \
+        -O /tmp/uz_UZ_Cyrl.dic 2>/dev/null || true
+    wget -q --timeout=30 --tries=1 \
+        "https://raw.githubusercontent.com/uzbek-net/uz-hunspell/main/uz_UZ_Cyrl.aff" \
+        -O /tmp/uz_UZ_Cyrl.aff 2>/dev/null || true
+
+    if [ -s /tmp/uz_UZ_Cyrl.dic ] && [ -s /tmp/uz_UZ_Cyrl.aff ]; then
+        mv /tmp/uz_UZ_Cyrl.dic "$HUNSPELL_DIR/uz_UZ_Cyrl.dic"
+        mv /tmp/uz_UZ_Cyrl.aff "$HUNSPELL_DIR/uz_UZ_Cyrl.aff"
+        echo "[HackNow OS] Hunspell O'zbek kirill lug'ati o'rnatildi"
+    fi
+    rm -f /tmp/uz_UZ_Cyrl.dic /tmp/uz_UZ_Cyrl.aff
+fi
+
+# === XFCE keyboard indicator (panel'da til ko'rsatish) ===
+# first-setup'da ham sozlanadi, lekin xdg default sifatida ham qo'yamiz
+
+echo "[HackNow OS] O'zbek til sozlamalari tugadi"

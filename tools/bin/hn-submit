@@ -1,0 +1,100 @@
+#!/bin/bash
+# hn-submit — HackNow CTF flag yuborish
+# Usage: hn-submit <flag> [challenge-id]
+set -u
+
+VERSION="0.1.0"
+API_BASE="${HN_API_BASE:-https://hacknow.uz/api}"
+CONFIG_DIR="$HOME/.config/hacknow"
+TOKEN_FILE="$CONFIG_DIR/token"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+FLAG="${1:-}"
+CHALLENGE_ID="${2:-}"
+
+if [ -z "$FLAG" ]; then
+    echo "Foydalanish: hn-submit <flag> [challenge-id]"
+    echo ""
+    echo "Misollar:"
+    echo "  hn-submit HN{flag_shu_yerda}"
+    echo "  hn-submit HN{flag} 42"
+    exit 1
+fi
+
+if [ ! -f "$TOKEN_FILE" ]; then
+    echo -e "${RED}[!] Avval tizimga kiring: hn-lab-connect login${NC}"
+    exit 1
+fi
+
+TOKEN=$(cat "$TOKEN_FILE")
+
+# Challenge ID raqam ekanligini tekshirish (injection oldini olish)
+if [ -n "$CHALLENGE_ID" ]; then
+    if ! [[ "$CHALLENGE_ID" =~ ^[0-9]+$ ]]; then
+        echo -e "${RED}[!] Challenge ID raqam bo'lishi kerak.${NC}"
+        exit 1
+    fi
+fi
+
+echo -e "${YELLOW}[*] Flag yuborilmoqda...${NC}"
+
+# JSON payload — env orqali (string interpolation emas, RCE-safe)
+PAYLOAD=$(HN_FLAG="$FLAG" HN_CHID="$CHALLENGE_ID" python3 - <<'PY' 2>/dev/null
+import json, os
+data = {"flag": os.environ.get("HN_FLAG", "")}
+chid = os.environ.get("HN_CHID", "")
+if chid:
+    data["challenge_id"] = int(chid)
+print(json.dumps(data))
+PY
+)
+
+if [ -z "$PAYLOAD" ]; then
+    echo -e "${RED}[!] Payload yaratishda xato.${NC}"
+    exit 1
+fi
+
+# HTTP code + body bilan birga olamiz
+HTTP_BODY=$(mktemp)
+trap 'rm -f "$HTTP_BODY"' EXIT
+
+HTTP_CODE=$(curl -s -o "$HTTP_BODY" -w "%{http_code}" \
+    -X POST "$API_BASE/ctf/submit/" \
+    -H "Authorization: Token $TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "$PAYLOAD" 2>/dev/null || echo "000")
+
+if [ "$HTTP_CODE" = "000" ]; then
+    echo -e "${RED}[!] Serverga ulanib bo'lmadi.${NC}"
+    exit 1
+fi
+
+if [ "$HTTP_CODE" -ge 400 ]; then
+    echo -e "${RED}[!] Server xatosi: HTTP $HTTP_CODE${NC}"
+    exit 1
+fi
+
+RESPONSE=$(cat "$HTTP_BODY")
+STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status',''))" 2>/dev/null || echo "")
+MSG=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('message',''))" 2>/dev/null || echo "")
+
+case "$STATUS" in
+    correct)
+        echo -e "${GREEN}[✓] TO'G'RI! $MSG${NC}"
+        POINTS=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('points',''))" 2>/dev/null || echo "")
+        [ -n "$POINTS" ] && echo -e "  +${POINTS} ball"
+        ;;
+    incorrect)
+        echo -e "${RED}[✗] NOTO'G'RI. $MSG${NC}"
+        ;;
+    already_solved)
+        echo -e "${YELLOW}[*] Bu masala allaqachon yechilgan.${NC}"
+        ;;
+    *)
+        echo -e "${YELLOW}[?] $MSG${NC}"
+        ;;
+esac

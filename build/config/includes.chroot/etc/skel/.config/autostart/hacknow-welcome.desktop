@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=HackNow Welcome
+Exec=sh -c "sleep 5 && hacknow-welcome"
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

@@ -1,0 +1,110 @@
+# HackNow OS — Plymouth Splash
+# Smooth pulse animation + progress bar
+
+# Background — solid dark
+Window.SetBackgroundTopColor(0.04, 0.04, 0.04);
+Window.SetBackgroundBottomColor(0.04, 0.04, 0.04);
+
+# === Logo (center) ===
+logo.image = Image("logo.png");
+logo.sprite = Sprite(logo.image);
+logo.x = Window.GetX() + Window.GetWidth() / 2 - logo.image.GetWidth() / 2;
+logo.y = Window.GetY() + Window.GetHeight() / 2 - logo.image.GetHeight() / 2 - 80;
+logo.sprite.SetX(logo.x);
+logo.sprite.SetY(logo.y);
+logo.sprite.SetOpacity(1.0);
+logo.sprite.SetZ(10);
+
+# === Title text ===
+title_image = Image.Text("HACKNOW OS", 1.0, 0.09, 0.27, 1.0, "Sans Bold 28");
+title_sprite = Sprite(title_image);
+title_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - title_image.GetWidth() / 2);
+title_sprite.SetY(Window.GetY() + Window.GetHeight() / 2 + 60);
+title_sprite.SetZ(10);
+
+# === Tagline ===
+tag_image = Image.Text("Rise Up! Let the storm, break loose!", 0.94, 0.85, 0.8, 1.0, "Sans Italic 12");
+tag_sprite = Sprite(tag_image);
+tag_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - tag_image.GetWidth() / 2);
+tag_sprite.SetY(Window.GetY() + Window.GetHeight() / 2 + 105);
+tag_sprite.SetZ(10);
+
+# === Progress bar ===
+bar_width = 400;
+bar_height = 4;
+bar_x = Window.GetX() + Window.GetWidth() / 2 - bar_width / 2;
+bar_y = Window.GetHeight() - 100;
+
+# Pool of pixel sprites
+pixel_pool = [];
+pixel_count = 200;
+for (i = 0; i < pixel_count; i++) {
+    pixel = Image("pixel.png");
+    if (pixel) {
+        sprite = Sprite(pixel);
+        sprite.SetX(bar_x + i * 2);
+        sprite.SetY(bar_y);
+        sprite.SetZ(20);
+        sprite.SetOpacity(0.0);
+        pixel_pool[i] = sprite;
+    }
+}
+
+# === Animation callbacks ===
+last_progress = 0;
+
+fun refresh_callback() {
+    progress = Plymouth.GetBootProgress();
+
+    # Logo pulse (sin wave, 0.85 to 1.0)
+    pulse = 0.85 + Math.Cos(progress * 12.56) * 0.075 + 0.075;
+    logo.sprite.SetOpacity(pulse);
+
+    # Progress bar fill
+    fill_count = Math.Int(pixel_count * progress);
+    for (i = 0; i < pixel_count; i++) {
+        if (i < fill_count) {
+            pixel_pool[i].SetOpacity(1.0);
+        } else {
+            pixel_pool[i].SetOpacity(0.0);
+        }
+    }
+
+    last_progress = progress;
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
+# === Boot message ===
+fun message_callback(text) {
+    msg_image = Image.Text(text, 0.65, 0.69, 0.80, 0.8, "Sans 10");
+    msg_sprite = Sprite(msg_image);
+    msg_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - msg_image.GetWidth() / 2);
+    msg_sprite.SetY(Window.GetHeight() - 50);
+    msg_sprite.SetZ(15);
+}
+
+Plymouth.SetMessageFunction(message_callback);
+
+# === Password prompt (LUKS) ===
+fun display_password_callback(prompt, bullets) {
+    # Show prompt
+    password_label = Image.Text("Parol: ", 1.0, 1.0, 1.0, 1.0, "Sans Bold 14");
+    password_sprite = Sprite(password_label);
+    password_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - password_label.GetWidth() / 2 - 80);
+    password_sprite.SetY(Window.GetY() + Window.GetHeight() / 2 + 150);
+    password_sprite.SetZ(20);
+
+    # Show bullets
+    bullet_str = "";
+    for (i = 0; i < bullets; i++) {
+        bullet_str += "●";
+    }
+    bullets_image = Image.Text(bullet_str, 1.0, 0.09, 0.27, 1.0, "Sans 14");
+    bullets_sprite = Sprite(bullets_image);
+    bullets_sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - bullets_image.GetWidth() / 2);
+    bullets_sprite.SetY(Window.GetY() + Window.GetHeight() / 2 + 150);
+    bullets_sprite.SetZ(20);
+}
+
+Plymouth.SetDisplayPasswordFunction(display_password_callback);

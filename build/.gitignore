@@ -1,0 +1,29 @@
+# Live-build chiqish fayllari
+*.iso
+*.img
+*.tar.gz
+build.log
+
+# Live-build vaqtinchalik papkalar
+.build/
+cache/
+chroot/
+binary/
+source/
+.cache/
+
+# live-build konfiguratsiya chiqishlari (lb config tomonidan yaratiladi)
+config/binary
+config/bootstrap
+config/chroot
+config/common
+config/source
+
+# OS
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+output/
+assets/

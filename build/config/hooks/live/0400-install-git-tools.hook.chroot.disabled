@@ -1,0 +1,105 @@
+#!/bin/sh
+# HackNow OS - Git repolaridan o'rnatiluvchi vositalar
+# Metasploit, SecLists, PEASS va boshqalar
+
+set -e
+
+echo "[HackNow OS] Git vositalari o'rnatilmoqda..."
+
+TOOLS_DIR="/opt/hacknow-tools"
+mkdir -p "$TOOLS_DIR"
+
+# === Metasploit Framework ===
+echo "[*] Metasploit o'rnatilmoqda..."
+if ! command -v msfconsole >/dev/null 2>&1; then
+    curl -fsSL https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb \
+        -o /tmp/msfinstall \
+        --connect-timeout 30 \
+        --max-time 300 \
+    && chmod +x /tmp/msfinstall \
+    && /tmp/msfinstall \
+    && rm -f /tmp/msfinstall \
+    || echo "[WARN] Metasploit o'rnatilmadi — internetga ulanishni tekshiring"
+fi
+
+# === PEASS-ng (Privilege Escalation Scripts) ===
+echo "[*] PEASS-ng yuklanmoqda..."
+mkdir -p "$TOOLS_DIR/PEASS"
+curl -fsSL \
+    https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh \
+    -o "$TOOLS_DIR/PEASS/linpeas.sh" \
+    --connect-timeout 30 \
+    --max-time 120 \
+    || echo "[WARN] linpeas.sh yuklanmadi"
+
+curl -fsSL \
+    https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany.exe \
+    -o "$TOOLS_DIR/PEASS/winpeas.exe" \
+    --connect-timeout 30 \
+    --max-time 120 \
+    || echo "[WARN] winpeas.exe yuklanmadi"
+
+chmod +x "$TOOLS_DIR/PEASS/linpeas.sh" 2>/dev/null || true
+
+# linpeas.sh ga global symlink
+ln -sf "$TOOLS_DIR/PEASS/linpeas.sh" /usr/local/bin/linpeas 2>/dev/null || true
+
+# === SecLists (Wordlists) ===
+echo "[*] SecLists yuklanmoqda (bu vaqt olishi mumkin)..."
+if [ ! -d /usr/share/seclists ]; then
+    git clone --depth 1 \
+        https://github.com/danielmiessler/SecLists.git \
+        /usr/share/seclists \
+    || echo "[WARN] SecLists yuklanmadi"
+fi
+
+# Wordlists simlink (tools odatda /usr/share/wordlists ni izlaydi)
+if [ -d /usr/share/seclists ] && [ ! -e /usr/share/wordlists ]; then
+    ln -sf /usr/share/seclists /usr/share/wordlists
+fi
+
+# === pspy (Process monitor without root) ===
+echo "[*] pspy yuklanmoqda..."
+mkdir -p "$TOOLS_DIR/pspy"
+curl -fsSL \
+    https://github.com/DominicBreuker/pspy/releases/latest/download/pspy64 \
+    -o "$TOOLS_DIR/pspy/pspy64" \
+    --connect-timeout 30 \
+    --max-time 60 \
+    && chmod +x "$TOOLS_DIR/pspy/pspy64" \
+    && ln -sf "$TOOLS_DIR/pspy/pspy64" /usr/local/bin/pspy \
+    || echo "[WARN] pspy yuklanmadi"
+
+# === chisel (Tunneling) ===
+echo "[*] chisel yuklanmoqda..."
+mkdir -p "$TOOLS_DIR/chisel"
+CHISEL_URL="https://github.com/jpillora/chisel/releases/latest/download/chisel_$(uname -m)_linux.gz"
+curl -fsSL "$CHISEL_URL" \
+    -o /tmp/chisel.gz \
+    --connect-timeout 30 \
+    --max-time 60 \
+    && gunzip /tmp/chisel.gz \
+    && mv /tmp/chisel "$TOOLS_DIR/chisel/chisel" \
+    && chmod +x "$TOOLS_DIR/chisel/chisel" \
+    && ln -sf "$TOOLS_DIR/chisel/chisel" /usr/local/bin/chisel \
+    || echo "[WARN] chisel yuklanmadi"
+
+# === Vositalar ro'yxatini yaratish ===
+cat > "$TOOLS_DIR/README.txt" << 'TOOLS_EOF'
+HackNow OS - O'rnatilgan vositalar
+
+/opt/hacknow-tools/
+  PEASS/     - Privilege Escalation Scripts (linpeas, winpeas)
+  pspy/      - Process monitor
+  chisel/    - TCP/UDP tunneling
+
+/usr/share/seclists/  - SecLists wordlists
+/usr/share/wordlists/ - Symlink -> seclists
+
+Buyruqlar:
+  linpeas    - Linux privilege escalation
+  pspy       - Process monitoring
+  chisel     - Tunneling
+TOOLS_EOF
+
+echo "[HackNow OS] Git vositalari o'rnatildi"

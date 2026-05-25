@@ -1,0 +1,7 @@
+*.deb
+*.changes
+*.buildinfo
+apt-repo/Packages*
+apt-repo/Release*
+apt-repo/InRelease
+apt-repo/pool/

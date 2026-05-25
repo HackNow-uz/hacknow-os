@@ -1,0 +1,69 @@
+#!/bin/bash
+# hn-submit — HackNow CTF flag yuborish
+# Usage: hn-submit <flag> [challenge-id]
+
+VERSION="0.1.0"
+API_BASE="https://hacknow.uz/api"
+CONFIG_DIR="$HOME/.config/hacknow"
+TOKEN_FILE="$CONFIG_DIR/token"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+FLAG="$1"
+CHALLENGE_ID="$2"
+
+if [ -z "$FLAG" ]; then
+    echo "Foydalanish: hn-submit <flag> [challenge-id]"
+    echo ""
+    echo "Misollar:"
+    echo "  hn-submit HN{flag_shu_yerda}"
+    echo "  hn-submit HN{flag} 42"
+    exit 1
+fi
+
+if [ ! -f "$TOKEN_FILE" ]; then
+    echo -e "${RED}[!] Avval tizimga kiring: hn-lab-connect login${NC}"
+    exit 1
+fi
+
+TOKEN=$(cat "$TOKEN_FILE")
+
+echo -e "${YELLOW}[*] Flag yuborilmoqda...${NC}"
+
+if [ -n "$CHALLENGE_ID" ]; then
+    PAYLOAD=$(HN_FLAG="$FLAG" HN_CID="$CHALLENGE_ID" python3 -c "import json,os; print(json.dumps({'flag': os.environ['HN_FLAG'], 'challenge_id': int(os.environ['HN_CID'])}))" 2>/dev/null || echo "{}")
+else
+    PAYLOAD=$(HN_FLAG="$FLAG" python3 -c "import json,os; print(json.dumps({'flag': os.environ['HN_FLAG']}))" 2>/dev/null || echo "{}")
+fi
+
+RESPONSE=$(curl -sf -X POST "$API_BASE/ctf/submit/" \
+    -H "Authorization: Token $TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "$PAYLOAD" 2>/dev/null)
+
+if [ $? -eq 0 ]; then
+    STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status',''))" 2>/dev/null)
+    MSG=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('message',''))" 2>/dev/null)
+
+    case "$STATUS" in
+        correct)
+            echo -e "${GREEN}[✓] TO'G'RI! $MSG${NC}"
+            POINTS=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('points',''))" 2>/dev/null)
+            [ -n "$POINTS" ] && echo -e "  +${POINTS} ball"
+            ;;
+        incorrect)
+            echo -e "${RED}[✗] NOTO'G'RI. $MSG${NC}"
+            ;;
+        already_solved)
+            echo -e "${YELLOW}[*] Bu masala allaqachon yechilgan.${NC}"
+            ;;
+        *)
+            echo -e "${YELLOW}[?] $MSG${NC}"
+            ;;
+    esac
+else
+    echo -e "${RED}[!] Serverga ulanib bo'lmadi.${NC}"
+fi

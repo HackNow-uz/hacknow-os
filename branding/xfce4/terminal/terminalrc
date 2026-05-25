@@ -1,0 +1,20 @@
+[Configuration]
+BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
+BackgroundDarkness=0.920000
+ColorForeground=#f0f0f0
+ColorBackground=#0a0a0a
+ColorCursor=#FF1744
+ColorCursorUseDefault=FALSE
+ColorSelection=#FF1744
+ColorSelectionUseDefault=FALSE
+ColorPalette=#0a0a0a;#FF1744;#00FF41;#F59E0B;#3b82f6;#a855f7;#00d4ff;#f0f0f0;#5a6a84;#ff2d55;#00ff88;#ffb020;#58a6ff;#bc8cff;#39d353;#ffffff
+FontName=Hack 11
+MiscAlwaysShowTabs=FALSE
+MiscBell=FALSE
+MiscBellUrgent=FALSE
+MiscDefaultGeometry=120x35
+MiscScrollAlternateScreen=TRUE
+MiscTabCloseMiddleClick=TRUE
+ScrollingLines=10000
+ScrollingOnOutput=FALSE
+TabActivityColor=#FF1744

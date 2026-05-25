@@ -1,0 +1,81 @@
+#? btop theme — HackNow
+
+# Main background
+theme[main_bg]="#0a0a0a"
+
+# Main text color
+theme[main_fg]="#f0f0f0"
+
+# Title color
+theme[title]="#FF1744"
+
+# Highlight color
+theme[hi_fg]="#FF1744"
+
+# Selected background
+theme[selected_bg]="#1a2332"
+
+# Selected text
+theme[selected_fg]="#FF1744"
+
+# Inactive text
+theme[inactive_fg]="#5a6a84"
+
+# Graph text
+theme[graph_text]="#a4b1cd"
+
+# Process box meter
+theme[meter_bg]="#1a2332"
+
+# Title color for boxes
+theme[proc_misc]="#00d4ff"
+
+# CPU box
+theme[cpu_box]="#FF1744"
+theme[mem_box]="#00FF41"
+theme[net_box]="#00d4ff"
+theme[proc_box]="#F59E0B"
+
+# Box divider lines
+theme[div_line]="#1a2332"
+
+# Temp graph
+theme[temp_start]="#00FF41"
+theme[temp_mid]="#F59E0B"
+theme[temp_end]="#FF1744"
+
+# CPU graph
+theme[cpu_start]="#00FF41"
+theme[cpu_mid]="#F59E0B"
+theme[cpu_end]="#FF1744"
+
+# Memory graph
+theme[free_start]="#00FF41"
+theme[free_mid]="#00d4ff"
+theme[free_end]="#FF1744"
+
+theme[cached_start]="#00d4ff"
+theme[cached_mid]="#a855f7"
+theme[cached_end]="#FF1744"
+
+theme[available_start]="#00FF41"
+theme[available_mid]="#00d4ff"
+theme[available_end]="#FF1744"
+
+theme[used_start]="#F59E0B"
+theme[used_mid]="#FF6680"
+theme[used_end]="#FF1744"
+
+# Network
+theme[download_start]="#00FF41"
+theme[download_mid]="#00d4ff"
+theme[download_end]="#FF1744"
+
+theme[upload_start]="#FF6680"
+theme[upload_mid]="#FF1744"
+theme[upload_end]="#FF1744"
+
+# Process box
+theme[process_start]="#00d4ff"
+theme[process_mid]="#a855f7"
+theme[process_end]="#FF1744"

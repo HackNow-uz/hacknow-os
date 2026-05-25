@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Conky Network Intel
+Exec=sh -c "sleep 6 && conky -c ~/.config/conky/conky-network.conf"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true

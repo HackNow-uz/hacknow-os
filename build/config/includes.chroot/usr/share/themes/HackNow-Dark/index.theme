@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=HackNow-Dark
+Comment=HackNow OS — Cyberpunk Dark Red Theme
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=HackNow-Dark
+MetacityTheme=HackNow-Dark
+IconTheme=Papirus-Dark
+CursorTheme=Bibata-Modern-Classic
+ButtonLayout=close,minimize,maximize:menu

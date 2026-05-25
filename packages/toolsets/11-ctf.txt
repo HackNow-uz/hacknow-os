@@ -1,0 +1,16 @@
+# === CTF Toollar ===
+
+# --- Debian repos ---
+exiftool
+binwalk
+foremost
+stegsnow
+xxd
+hexedit
+
+# --- Custom install ---
+# pwntools           → pip
+# z3-solver          → pip
+# stegsolve          → scripts/install-stegsolve.sh
+# hn-lab-connect     → hacknow-os-tools
+# hn-submit          → hacknow-os-tools

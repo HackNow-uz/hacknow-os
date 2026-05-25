@@ -1,0 +1,47 @@
+#!/bin/bash
+# hn-record — Screen recording helper
+# Saqlaydi: ~/Pentest/Screenshots/<timestamp>_<target>.gif|webm
+
+DIR="$HOME/Pentest/Screenshots"
+mkdir -p "$DIR"
+
+# Help — argsiz yoki -h/--help
+case "${1:-}" in
+    ""|-h|--help|help)
+        cat <<HELP
+hn-record — Screen recording
+
+Foydalanish:
+    hn-record gif       — Peek bilan GIF yozish
+    hn-record video     — SimpleScreenRecorder bilan video
+
+Saqlanadi: $DIR/
+
+Target nomini saqlash uchun:
+    export TARGET=example.com
+    hn-record gif
+HELP
+        exit 0
+        ;;
+    gif|g)
+        if ! command -v peek >/dev/null 2>&1; then
+            echo "❌ peek o'rnatilmagan. O'rnatish: sudo apt install peek"
+            exit 1
+        fi
+        peek &
+        echo "✓ Peek ochildi — Record GIF tugmasini bosing"
+        ;;
+    video|v|webm)
+        if ! command -v simplescreenrecorder >/dev/null 2>&1; then
+            echo "❌ simplescreenrecorder o'rnatilmagan. O'rnatish: sudo apt install simplescreenrecorder"
+            exit 1
+        fi
+        simplescreenrecorder --start-hidden &
+        echo "✓ SimpleScreenRecorder ochildi"
+        ;;
+    *)
+        echo "❌ Noma'lum parametr: $1"
+        echo "Yordam: hn-record --help"
+        exit 1
+        ;;
+esac

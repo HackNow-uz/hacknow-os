@@ -1,0 +1,48 @@
+#!/bin/bash
+# HackNow OS — Welcome Wizard
+
+FLAG="$HOME/.config/hacknow-welcome-shown"
+[ -f "$FLAG" ] && exit 0
+
+# Wait for GTK
+sleep 3
+
+if command -v yad >/dev/null 2>&1; then
+    yad --title="HackNow OS" \
+        --width=720 --height=520 \
+        --center \
+        --button="Tushunarli!:0" \
+        --window-icon=/usr/share/pixmaps/hacknow-logo.png \
+        --form \
+        --separator="|" \
+        --field=":LBL" "" \
+        --field=":LBL" "" \
+        --field="<span size='xx-large' weight='bold' color='#FF1744'>HackNow OS</span>:LBL" \
+        --field="<i>Rise Up! Let the storm, break loose!</i>:LBL" \
+        --field=":LBL" "" \
+        --field="<b>Tezkor klavishlar:</b>:LBL" \
+        --field="  Super + Enter   — Terminal:LBL" \
+        --field="  Super + D       — Ilovalar (Rofi):LBL" \
+        --field="  Super + E       — Fayl menejeri:LBL" \
+        --field="  Super + B       — Browser:LBL" \
+        --field="  Super + 1-4     — Workspace:LBL" \
+        --field="  F12             — Tilda drop-down terminal:LBL" \
+        --field="  Ctrl+Shift+V    — CopyQ clipboard:LBL" \
+        --field=":LBL" "" \
+        --field="<b>HackNow CLI toollar:</b>:LBL" \
+        --field="  hn-info, hn-decode, hn-hash, hn-listen:LBL" \
+        --field="  hn-lab-connect, hn-vpn, hn-submit:LBL" \
+        --field="  hn-screenshot, hn-record, hn-note:LBL" \
+        --field=":LBL" "" \
+        --field="<b>Default credentials:</b>:LBL" \
+        --field="  User: <tt>hacknow</tt>   Password: <tt>hacknow</tt>:LBL" \
+        --field="  <span color='#F59E0B'>O'rnatishdan keyin parolni o'zgartiring!</span>:LBL" \
+        2>/dev/null
+elif command -v zenity >/dev/null 2>&1; then
+    zenity --info --title="HackNow OS" \
+        --width=500 \
+        --text="HackNow OS 0.1 ga xush kelibsiz!\n\nSuper+Enter — Terminal\nSuper+D — Apps\nSuper+E — Files\nF12 — Tilda\n\nDefault parol: hacknow"
+fi
+
+mkdir -p "$(dirname "$FLAG")"
+touch "$FLAG"

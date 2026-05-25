@@ -1,0 +1,49 @@
+#!/bin/bash
+# hn-scope — Pentest scope boshqarish
+# Usage: hn-scope add <target> | list | clear | export
+
+SCOPE_FILE="${HN_SCOPE_FILE:-$HOME/.hacknow-scope}"
+
+case "${1:-}" in
+    add)
+        shift
+        for target in "$@"; do
+            echo "$target" >> "$SCOPE_FILE"
+            echo "[+] Qo'shildi: $target"
+        done
+        sort -u "$SCOPE_FILE" -o "$SCOPE_FILE"
+        ;;
+    remove|rm)
+        if [ -n "$2" ]; then
+            grep -v "^$2$" "$SCOPE_FILE" > "$SCOPE_FILE.tmp" && mv "$SCOPE_FILE.tmp" "$SCOPE_FILE"
+            echo "[-] O'chirildi: $2"
+        fi
+        ;;
+    list|ls)
+        if [ -f "$SCOPE_FILE" ]; then
+            echo "=== Scope ==="
+            cat -n "$SCOPE_FILE"
+            echo "============="
+            echo "Jami: $(wc -l < "$SCOPE_FILE") ta target"
+        else
+            echo "Scope bo'sh."
+        fi
+        ;;
+    clear)
+        rm -f "$SCOPE_FILE"
+        echo "[*] Scope tozalandi."
+        ;;
+    export)
+        FORMAT="${2:-txt}"
+        if [ -f "$SCOPE_FILE" ]; then
+            case "$FORMAT" in
+                nmap) cat "$SCOPE_FILE" | tr '\n' ' ' ;;
+                txt)  cat "$SCOPE_FILE" ;;
+                *)    echo "Format: txt, nmap" ;;
+            esac
+        fi
+        ;;
+    *)
+        echo "Foydalanish: hn-scope [add|remove|list|clear|export] [target...]"
+        ;;
+esac

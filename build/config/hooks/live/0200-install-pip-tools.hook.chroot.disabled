@@ -1,0 +1,28 @@
+#!/bin/sh
+# HackNow OS - Python pentesting vositalari
+# pipx orqali o'rnatiladi (Debian repolarida yo'q vositalar)
+
+set -e
+
+echo "[HackNow OS] Python vositalari o'rnatilmoqda..."
+
+# pipx mavjudligini tekshirish
+if ! command -v pipx >/dev/null 2>&1; then
+    python3 -m pip install --user pipx || python3 -m pip install pipx
+    python3 -m pipx ensurepath
+fi
+
+export PIPX_HOME=/opt/pipx
+export PIPX_BIN_DIR=/usr/local/bin
+
+# Vositalarni o'rnatish (xato bo'lsa ham davom etadi)
+pipx install impacket     || echo "[WARN] impacket o'rnatilmadi"
+pipx install pwntools     || echo "[WARN] pwntools o'rnatilmadi"
+pipx install crackmapexec || echo "[WARN] crackmapexec o'rnatilmadi"
+pipx install certipy-ad   || echo "[WARN] certipy-ad o'rnatilmadi"
+pipx install bloodhound   || echo "[WARN] bloodhound o'rnatilmadi"
+pipx install updog        || echo "[WARN] updog o'rnatilmadi"
+pipx install netexec      || echo "[WARN] netexec o'rnatilmadi"
+pipx install pyftpdlib    || echo "[WARN] pyftpdlib o'rnatilmadi"
+
+echo "[HackNow OS] Python vositalari o'rnatildi"

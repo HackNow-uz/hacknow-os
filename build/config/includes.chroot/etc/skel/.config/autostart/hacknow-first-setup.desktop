@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=HackNow OS First Setup
+Exec=hacknow-first-setup
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

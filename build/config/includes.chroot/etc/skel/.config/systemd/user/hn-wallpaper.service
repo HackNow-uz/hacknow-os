@@ -1,0 +1,6 @@
+[Unit]
+Description=Rotate HackNow wallpaper
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/hn-wallpaper-rotate

@@ -1,0 +1,187 @@
+#!/bin/bash
+# hn-lab-connect — HackNow Lab muhitiga ulanish
+# Usage: hn-lab-connect <lab-id>
+
+VERSION="0.1.0"
+API_BASE="https://lab.hacknow.uz/api"
+CONFIG_DIR="$HOME/.config/hacknow"
+TOKEN_FILE="$CONFIG_DIR/token"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+banner() {
+    echo -e "${CYAN}"
+    echo "  ╦ ╦╔╗╔  ╦  ╔═╗╔╗ "
+    echo "  ╠═╣║║║  ║  ╠═╣╠╩╗"
+    echo "  ╩ ╩╝╚╝  ╩═╝╩ ╩╚═╝"
+    echo -e "${NC}"
+    echo "  HackNow Lab Connect v${VERSION}"
+    echo ""
+}
+
+usage() {
+    echo "Foydalanish: hn-lab-connect [buyruq] [parametrlar]"
+    echo ""
+    echo "Buyruqlar:"
+    echo "  start <lab-id>    Lab muhitini ishga tushirish"
+    echo "  stop <lab-id>     Lab muhitini to'xtatish"
+    echo "  status            Faol lablar ro'yxati"
+    echo "  ssh <lab-id>      Lab'ga SSH orqali ulanish"
+    echo "  vpn <lab-id>      Lab VPN'ga ulanish"
+    echo "  login             HackNow hisobiga kirish"
+    echo "  info <lab-id>     Lab ma'lumotlari"
+    echo "  version           Versiya"
+}
+
+check_auth() {
+    if [ ! -f "$TOKEN_FILE" ]; then
+        echo -e "${RED}[!] Avval tizimga kiring: hn-lab-connect login${NC}"
+        exit 1
+    fi
+}
+
+do_login() {
+    mkdir -p "$CONFIG_DIR"
+    echo -e "${CYAN}HackNow hisobiga kirish${NC}"
+    echo -n "Username: "
+    read -r username
+    echo -n "Parol: "
+    read -rs password
+    echo ""
+
+    json_payload=$(HN_USER="$username" HN_PASS="$password" python3 -c "import json,os; print(json.dumps({'username': os.environ['HN_USER'], 'password': os.environ['HN_PASS']}))" 2>/dev/null || echo '{}')
+    response=$(curl -sf -X POST "$API_BASE/auth/token/" \
+        -H "Content-Type: application/json" \
+        -d "$json_payload" 2>/dev/null)
+
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}[!] Kirish xatosi. Username yoki parol noto'g'ri.${NC}"
+        exit 1
+    fi
+
+    token=$(echo "$response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))" 2>/dev/null)
+
+    if [ -n "$token" ]; then
+        echo "$token" > "$TOKEN_FILE"
+        chmod 600 "$TOKEN_FILE"
+        echo -e "${GREEN}[✓] Muvaffaqiyatli kirdingiz!${NC}"
+    else
+        echo -e "${RED}[!] Token olinmadi.${NC}"
+        exit 1
+    fi
+}
+
+api_call() {
+    local method="$1"
+    local endpoint="$2"
+    local data="$3"
+    local token=$(cat "$TOKEN_FILE" 2>/dev/null)
+
+    if [ "$method" = "GET" ]; then
+        curl -sf -H "Authorization: Token $token" "$API_BASE$endpoint"
+    else
+        curl -sf -X "$method" -H "Authorization: Token $token" \
+            -H "Content-Type: application/json" \
+            -d "$data" "$API_BASE$endpoint"
+    fi
+}
+
+do_start() {
+    local lab_id="$1"
+    [ -z "$lab_id" ] && { echo -e "${RED}[!] Lab ID kerak: hn-lab-connect start <lab-id>${NC}"; exit 1; }
+    check_auth
+
+    echo -e "${YELLOW}[*] Lab #$lab_id ishga tushirilmoqda...${NC}"
+    response=$(api_call POST "/labs/$lab_id/start/" "{}")
+
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}[✓] Lab #$lab_id ishga tushdi!${NC}"
+        echo "$response" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(f\"  IP:   {d.get('ip', 'N/A')}\")
+print(f\"  Port: {d.get('port', 'N/A')}\")
+print(f\"  VPN:  {d.get('vpn_config', 'N/A')}\")
+" 2>/dev/null
+    else
+        echo -e "${RED}[!] Lab ishga tushmadi.${NC}"
+    fi
+}
+
+do_stop() {
+    local lab_id="$1"
+    [ -z "$lab_id" ] && { echo -e "${RED}[!] Lab ID kerak${NC}"; exit 1; }
+    check_auth
+
+    echo -e "${YELLOW}[*] Lab #$lab_id to'xtatilmoqda...${NC}"
+    api_call POST "/labs/$lab_id/stop/" "{}" >/dev/null
+    echo -e "${GREEN}[✓] Lab #$lab_id to'xtatildi.${NC}"
+}
+
+do_status() {
+    check_auth
+    echo -e "${CYAN}Faol lablar:${NC}"
+    echo ""
+    api_call GET "/labs/active/" | python3 -c "
+import sys, json
+labs = json.load(sys.stdin)
+if not labs:
+    print('  Faol lab yo\'q.')
+else:
+    for lab in labs:
+        print(f\"  [{lab['id']}] {lab['name']} — {lab.get('ip','N/A')} ({lab.get('status','?')})\")
+" 2>/dev/null
+}
+
+do_ssh() {
+    local lab_id="$1"
+    [ -z "$lab_id" ] && { echo -e "${RED}[!] Lab ID kerak${NC}"; exit 1; }
+    check_auth
+
+    info=$(api_call GET "/labs/$lab_id/")
+    ip=$(echo "$info" | python3 -c "import sys,json; print(json.load(sys.stdin).get('ip',''))" 2>/dev/null)
+    port=$(echo "$info" | python3 -c "import sys,json; print(json.load(sys.stdin).get('ssh_port','22'))" 2>/dev/null)
+
+    if [ -n "$ip" ]; then
+        echo -e "${GREEN}[*] SSH: $ip:$port${NC}"
+        ssh -o StrictHostKeyChecking=no -p "$port" "user@$ip"
+    else
+        echo -e "${RED}[!] Lab ma'lumotlari topilmadi.${NC}"
+    fi
+}
+
+do_info() {
+    local lab_id="$1"
+    [ -z "$lab_id" ] && { echo -e "${RED}[!] Lab ID kerak${NC}"; exit 1; }
+    check_auth
+
+    api_call GET "/labs/$lab_id/" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(f\"Lab:      {d.get('name', 'N/A')}\")
+print(f\"Status:   {d.get('status', 'N/A')}\")
+print(f\"IP:       {d.get('ip', 'N/A')}\")
+print(f\"Turi:     {d.get('type', 'N/A')}\")
+print(f\"Qiyinlik: {d.get('difficulty', 'N/A')}\")
+print(f\"Tavsif:   {d.get('description', 'N/A')}\")
+" 2>/dev/null
+}
+
+# Main
+banner
+
+case "${1:-}" in
+    start)   do_start "$2" ;;
+    stop)    do_stop "$2" ;;
+    status)  do_status ;;
+    ssh)     do_ssh "$2" ;;
+    vpn)     echo "VPN funksiyasi hali tayyor emas." ;;
+    login)   do_login ;;
+    info)    do_info "$2" ;;
+    version) echo "v${VERSION}" ;;
+    *)       usage ;;
+esac

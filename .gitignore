@@ -1,0 +1,51 @@
+# ============================================================
+# HackNow OS monorepo .gitignore
+# ============================================================
+
+# --- Build chiqishlari (har qanday joydan) ---
+*.iso
+*.img
+*.tar.gz
+*.deb
+build.log
+
+# --- live-build vaqtinchalik kataloglari ---
+build/.build/
+build/cache/
+build/chroot/
+build/binary/
+build/source/
+build/.cache/
+build/output/
+build/assets/
+
+# --- live-build tomonidan generatsiya qilinadigan config ---
+build/config/binary
+build/config/bootstrap
+build/config/chroot
+build/config/common
+build/config/source
+
+# --- Node.js ---
+node_modules/
+.next/
+.turbo/
+dist/
+out/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# --- Editor ---
+.vscode/
+.idea/
+*.iml
+
+# --- Logs / temp ---
+*.log
+.env.local
+.env.*.local

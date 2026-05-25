@@ -1,0 +1,350 @@
+#!/bin/sh
+# HackNow OS - Asosiy tizim sozlamalari
+# Chroot muhitida ishga tushadi
+
+set -e
+
+echo "[HackNow OS] Tizim sozlamalari boshlandi..."
+
+HACKNOW_HOME="/home/hacknow"
+
+# === O'zbek locale yaratish va default qilish ===
+if [ -f /etc/locale.gen ]; then
+    sed -i 's/^# *uz_UZ.UTF-8/uz_UZ.UTF-8/' /etc/locale.gen
+    sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
+    sed -i 's/^# *ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
+    locale-gen 2>/dev/null || true
+    echo "[HackNow OS] uz_UZ.UTF-8 locale yaratildi"
+fi
+
+cat > /etc/default/locale << 'LOCALE_EOF'
+LANG=uz_UZ.UTF-8
+LANGUAGE=uz:en:ru
+LC_MESSAGES=uz_UZ.UTF-8
+LC_TIME=uz_UZ.UTF-8
+LC_NUMERIC=en_US.UTF-8
+LC_MONETARY=uz_UZ.UTF-8
+LOCALE_EOF
+
+echo "[HackNow OS] Default til: O'zbek (uz_UZ.UTF-8)"
+
+# === Foydalanuvchi yaratish ===
+# Default shell — zsh (agar mavjud bo'lsa), aks holda bash
+DEFAULT_SHELL=$(command -v zsh 2>/dev/null || echo /bin/bash)
+
+if ! id hacknow >/dev/null 2>&1; then
+    useradd -m -s "$DEFAULT_SHELL" -G sudo,netdev hacknow
+    echo "hacknow:hacknow" | chpasswd
+    echo "[HackNow OS] 'hacknow' foydalanuvchisi yaratildi (shell: $DEFAULT_SHELL)"
+fi
+
+# Qo'shimcha guruhlar (mavjud bo'lsa)
+for grp in bluetooth scanner wireshark audio video plugdev; do
+    if getent group "$grp" >/dev/null 2>&1; then
+        usermod -aG "$grp" hacknow 2>/dev/null || true
+    fi
+done
+
+# === Sudo parolsiz ===
+echo "hacknow ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/hacknow
+chmod 0440 /etc/sudoers.d/hacknow
+
+# === Xizmatlar ===
+systemctl enable NetworkManager 2>/dev/null || true
+systemctl enable lightdm 2>/dev/null || true
+# SSH default OFF — xavfsizlik (user o'zi yoqadi: sudo systemctl start ssh)
+systemctl disable ssh 2>/dev/null || true
+systemctl disable ssh.socket 2>/dev/null || true
+
+# === Keraksiz servicelar — boot tezligini oshirish uchun ===
+for svc in avahi-daemon ModemManager cups cups-browsed bluetooth \
+           apt-daily.timer apt-daily-upgrade.timer \
+           motd-news.timer e2scrub_all.timer fstrim.timer \
+           plocate.timer; do
+    systemctl disable "$svc" 2>/dev/null || true
+done
+
+# Shell user yaratilganda allaqachon belgilangan ($DEFAULT_SHELL)
+chsh -s "$DEFAULT_SHELL" hacknow 2>/dev/null || true
+
+# === update-alternatives — upx muammosini tuzatish ===
+# upx-ucl post-install upx alternative yaratish kerak, lekin u yo'q
+if [ -x /usr/bin/upx-ucl ] && [ ! -L /usr/bin/upx ]; then
+    update-alternatives --install /usr/bin/upx upx /usr/bin/upx-ucl 100 2>/dev/null || true
+fi
+
+# === pcscd disable (smart card xizmati, kerak emas) ===
+systemctl disable pcscd.service 2>/dev/null || true
+systemctl disable pcscd.socket 2>/dev/null || true
+
+# === LightDM autologin ===
+mkdir -p /etc/lightdm
+cat > /etc/lightdm/lightdm.conf << 'EOF'
+[Seat:*]
+autologin-user=hacknow
+autologin-user-timeout=0
+user-session=xfce
+EOF
+
+# === Skel'dan BARCHA config'larni nusxalash ===
+# (xfce4-desktop, xfce4-panel, xsettings, xfwm4, terminal,
+#  picom, rofi, conky, dunst, gtk, autostart — hammasi skel'da)
+cp -r /etc/skel/. "$HACKNOW_HOME/" 2>/dev/null || true
+
+# === Eski panel cache tozalash (toza start uchun) ===
+rm -rf "$HACKNOW_HOME/.config/xfce4/panel" 2>/dev/null || true
+rm -rf "$HACKNOW_HOME/.cache" 2>/dev/null || true
+
+# === XFCE first-run wizard'ni o'chirish ===
+# Bu flag bor bo'lsa XFCE "welcome" dialog va default config yaratmaydi
+# XFCE versiyasiga moslashtirish (4.18, 4.20 va h.k.)
+mkdir -p "$HACKNOW_HOME/.config/xfce4"
+XFCE_VER=$(dpkg -l xfce4-session 2>/dev/null | awk '/^ii/{print $3}' | cut -d. -f1-2)
+XFCE_VER="${XFCE_VER:-4.18}"
+touch "$HACKNOW_HOME/.config/xfce4/.first-start-${XFCE_VER}"
+
+# === XFCE channel config'larni xfconfd cache'ga yozish ===
+# Bu XFCE first-login'da bizning config'ni overwrite qilmasligini ta'minlaydi
+mkdir -p "$HACKNOW_HOME/.config/xfce4/xfconf/xfce-perchannel-xml"
+for f in /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/*.xml; do
+    cp "$f" "$HACKNOW_HOME/.config/xfce4/xfconf/xfce-perchannel-xml/" 2>/dev/null || true
+done
+
+# === Picom xrender backend (VM uchun fallback) ===
+if [ -f "$HACKNOW_HOME/.config/picom/picom.conf" ]; then
+    # Agar GPU bo'lmasa xrender ishlatish uchun wrapper
+    cat > /usr/local/bin/picom-start << 'PICOM_SH'
+#!/bin/sh
+# HackNow OS picom starter — GLX yoki xrender fallback
+if picom --backend glx --config ~/.config/picom/picom.conf -b 2>/dev/null; then
+    exit 0
+fi
+# GLX ishlamasa xrender
+exec picom --backend xrender \
+    --corner-radius 12 \
+    --shadow --shadow-radius 10 --shadow-opacity 0.5 \
+    --fading --fade-in-step 0.04 --fade-out-step 0.04 \
+    --inactive-opacity 0.92 \
+    -b 2>/dev/null
+PICOM_SH
+    chmod +x /usr/local/bin/picom-start
+fi
+
+# === Picom autostart'ni wrapper'ga yo'naltirish ===
+if [ -f "$HACKNOW_HOME/.config/autostart/picom.desktop" ]; then
+    sed -i 's|Exec=picom.*|Exec=picom-start|' "$HACKNOW_HOME/.config/autostart/picom.desktop"
+fi
+if [ -f /etc/skel/.config/autostart/picom.desktop ]; then
+    sed -i 's|Exec=picom.*|Exec=picom-start|' /etc/skel/.config/autostart/picom.desktop
+fi
+
+# === Neofetch — config va ASCII faylni user uchun sozlash ===
+if [ -f /etc/neofetch/hacknow.ascii ]; then
+    mkdir -p "$HACKNOW_HOME/.config/neofetch"
+    cp /etc/neofetch/hacknow.ascii "$HACKNOW_HOME/.config/neofetch/hacknow.ascii" 2>/dev/null || true
+fi
+
+# Config'da ~ bor bo'lsa, absolut yo'lga aylantirish (neofetch ~ expand qilmaydi)
+for conf in "$HACKNOW_HOME/.config/neofetch/config.conf" /etc/neofetch/config.conf; do
+    if [ -f "$conf" ]; then
+        sed -i "s|image_source=\"~/.config/neofetch|image_source=\"$HACKNOW_HOME/.config/neofetch|" "$conf" 2>/dev/null || true
+        sed -i 's|image_source="~/|image_source="/etc/neofetch/|' "$conf" 2>/dev/null || true
+        # ascii_distro=off bo'lmasa qo'shish (distro logo'sini bekor qilish)
+        if ! grep -q "ascii_distro" "$conf" 2>/dev/null; then
+            echo 'ascii_distro="off"' >> "$conf"
+        fi
+    fi
+done
+
+# === Papirus icon default ===
+mkdir -p "$HACKNOW_HOME/.icons/default"
+cat > "$HACKNOW_HOME/.icons/default/index.theme" << 'EOF'
+[Icon Theme]
+Inherits=Papirus-Dark
+EOF
+
+# === /opt/hacknow-tools ===
+mkdir -p /opt/hacknow-tools/bin
+
+# === Starship install (online — timeout 60s, fail-safe) ===
+if ! command -v starship >/dev/null 2>&1; then
+    echo "[HackNow OS] Starship o'rnatilmoqda..."
+    curl -sS --max-time 60 https://starship.rs/install.sh 2>/dev/null | \
+        sh -s -- -y -b /usr/local/bin 2>/dev/null || \
+        echo "[HackNow OS] Starship offline — fallback prompt ishlatiladi"
+fi
+
+# === Nerd Font (Hack Nerd Font — online, timeout 120s) ===
+NERD_DIR="/usr/share/fonts/truetype/nerd-fonts"
+mkdir -p "$NERD_DIR"
+cd /tmp
+if wget -q --timeout=120 --tries=2 \
+    "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip" \
+    -O hack.zip 2>/dev/null && [ -s hack.zip ]; then
+    unzip -q -o hack.zip -d "$NERD_DIR" "*.ttf" 2>/dev/null || true
+    fc-cache -fv "$NERD_DIR" >/dev/null 2>&1 || true
+    echo "[HackNow OS] Hack Nerd Font o'rnatildi"
+else
+    echo "[HackNow OS] Nerd Font offline — fonts-hack ishlatiladi"
+fi
+rm -f /tmp/hack.zip
+
+# === Ownership (birinchi bosqich — oxirida yana ishlatiladi) ===
+chown -R hacknow:hacknow "$HACKNOW_HOME/"
+
+# === Papirus-Dark icon inheritance fix ===
+# breeze-dark Bookworm'da yo'q — Papirus'ga inherit qilamiz
+if [ -f /usr/share/icons/Papirus-Dark/index.theme ]; then
+    sed -i 's/^Inherits=breeze-dark.*/Inherits=Papirus,Adwaita,hicolor/' \
+        /usr/share/icons/Papirus-Dark/index.theme
+    echo "[HackNow OS] Papirus-Dark — Papirus'ga inherit qilindi"
+fi
+
+# Papirus-Dark'da apps folder yo'q — Papirus'dan symlink
+for size in 16x16 22x22 24x24 32x32 48x48 64x64; do
+    if [ -d "/usr/share/icons/Papirus/$size/apps" ] && [ ! -e "/usr/share/icons/Papirus-Dark/$size/apps" ]; then
+        ln -sf "/usr/share/icons/Papirus/$size/apps" "/usr/share/icons/Papirus-Dark/$size/apps" 2>/dev/null || true
+    fi
+done
+
+# Icon cache yangilash — barcha iconlar topilsin
+for theme in Papirus Papirus-Dark Adwaita hicolor; do
+    if [ -d "/usr/share/icons/$theme" ]; then
+        gtk-update-icon-cache -f -t "/usr/share/icons/$theme" 2>/dev/null || true
+    fi
+done
+echo "[HackNow OS] Icon cache yangilandi"
+
+# === Bibata Cursor (apt'dan yo'q bo'lsa, GitHub'dan yuklab o'rnatish) ===
+if [ ! -d /usr/share/icons/Bibata-Modern-Classic ]; then
+    echo "[HackNow OS] Bibata cursor o'rnatilmoqda..."
+    cd /tmp
+    wget -q --timeout=60 \
+        https://github.com/ful1e5/Bibata_Cursor/releases/latest/download/Bibata-Modern-Classic.tar.xz \
+        -O Bibata-Modern-Classic.tar.xz 2>/dev/null || true
+    if [ -s /tmp/Bibata-Modern-Classic.tar.xz ]; then
+        tar -xf /tmp/Bibata-Modern-Classic.tar.xz -C /usr/share/icons/ 2>/dev/null || true
+        echo "[HackNow OS] Bibata cursor o'rnatildi"
+    else
+        echo "[HackNow OS] Bibata cursor yuklab olinmadi (offline build) — Adwaita fallback"
+    fi
+    rm -f /tmp/Bibata-Modern-Classic.tar.xz
+fi
+
+# === Default cursor theme (system-wide) ===
+mkdir -p /usr/share/icons/default
+cat > /usr/share/icons/default/index.theme << 'CURSOR_EOF'
+[Icon Theme]
+Inherits=Bibata-Modern-Classic
+CURSOR_EOF
+
+# === Plymouth theme activate ===
+if [ -f /usr/sbin/plymouth-set-default-theme ]; then
+    plymouth-set-default-theme hacknow 2>/dev/null || true
+    update-initramfs -u 2>/dev/null || true
+    echo "[HackNow OS] Plymouth theme 'hacknow' faollashtirildi"
+fi
+
+# === GRUB update ===
+update-grub 2>/dev/null || true
+
+# === Wallpaper timer (auto-rotate 30min) ===
+mkdir -p "$HACKNOW_HOME/.config/systemd/user/timers.target.wants"
+# chroot'da systemctl --user ishlamaydi (D-Bus yo'q), symlink qo'lda yaratamiz
+ln -sf "$HACKNOW_HOME/.config/systemd/user/hn-wallpaper.timer" \
+    "$HACKNOW_HOME/.config/systemd/user/timers.target.wants/hn-wallpaper.timer" 2>/dev/null || true
+
+# === tldr cache update (timeout 30s) ===
+if command -v tldr >/dev/null 2>&1; then
+    timeout 30 tldr --update 2>/dev/null || echo "[HackNow OS] tldr cache update o'tkazildi (timeout/offline)"
+fi
+
+# === Tmux plugin manager + resurrect ===
+TPM_DIR="$HACKNOW_HOME/.tmux/plugins/tpm"
+if [ ! -d "$TPM_DIR" ]; then
+    git clone --depth 1 https://github.com/tmux-plugins/tpm "$TPM_DIR" 2>/dev/null || \
+        echo "[HackNow OS] TPM offline — keyin install qilinadi"
+fi
+
+# === Calamares installer integratsiyasi ===
+if command -v calamares >/dev/null 2>&1; then
+    # Desktop shortcut executable
+    chmod +x /etc/skel/Desktop/install-hacknow.desktop 2>/dev/null || true
+    chmod +x "$HACKNOW_HOME/Desktop/install-hacknow.desktop" 2>/dev/null || true
+
+    # Calamares branding — /usr/share joyiga ko'chirish (Calamares shu yerdan qidiradi)
+    if [ -d /etc/calamares ] && [ ! -d /usr/share/calamares/branding/hacknow ]; then
+        mkdir -p /usr/share/calamares/branding/hacknow
+        # Branding fayllarini includes.chroot'dan kelganlarini ko'chirish
+        for f in /etc/calamares/branding/hacknow/*; do
+            [ -e "$f" ] && cp -a "$f" /usr/share/calamares/branding/hacknow/ 2>/dev/null
+        done
+    fi
+
+    # lrelease topish
+    LRELEASE=""
+    if command -v lrelease >/dev/null 2>&1; then
+        LRELEASE="lrelease"
+    elif command -v lrelease-qt5 >/dev/null 2>&1; then
+        LRELEASE="lrelease-qt5"
+    fi
+
+    # Calamares asosiy O'zbek tarjimasi (882 string — to'liq UI)
+    CALA_LANG="/usr/share/calamares/lang"
+    if [ -n "$LRELEASE" ] && [ -f "$CALA_LANG/calamares_uz.ts" ]; then
+        $LRELEASE "$CALA_LANG/calamares_uz.ts" -qm "$CALA_LANG/calamares_uz.qm" 2>/dev/null || true
+        echo "[HackNow OS] calamares_uz.ts → calamares_uz.qm kompilyatsiya qilindi"
+    elif [ -n "$LRELEASE" ]; then
+        echo "[HackNow OS] OGOHLANTIRISH: calamares_uz.ts topilmadi"
+    else
+        echo "[HackNow OS] OGOHLANTIRISH: lrelease topilmadi, uz.qm yaratilmadi"
+    fi
+
+    # Branding uz.ts → uz.qm (brendlash stringlari)
+    BRANDING_DIR="/usr/share/calamares/branding/hacknow"
+    if [ -n "$LRELEASE" ] && [ -f "$BRANDING_DIR/uz.ts" ]; then
+        $LRELEASE "$BRANDING_DIR/uz.ts" -qm "$BRANDING_DIR/uz.qm" 2>/dev/null || true
+        echo "[HackNow OS] branding uz.ts → uz.qm kompilyatsiya qilindi"
+    fi
+
+    # GTK panelida ham ko'rinishi uchun
+    if [ -f /usr/share/applications/install-hacknow.desktop ]; then
+        update-desktop-database /usr/share/applications/ 2>/dev/null || true
+    fi
+
+    echo "[HackNow OS] Calamares installer integratsiyalandi"
+else
+    echo "[HackNow OS] DIQQAT: calamares paketi topilmadi"
+fi
+
+# === XFCE menu'ga HackNow kategoriyalar qo'shish ===
+# xfce-applications.menu'ning oxirgi </Menu> oldiga faqat 1 marta merge qo'shish
+XFCE_MENU="/etc/xdg/menus/xfce-applications.menu"
+if [ -f /etc/xdg/menus/hacknow-applications.menu ] && [ -f "$XFCE_MENU" ]; then
+    if ! grep -q "hacknow-applications.menu" "$XFCE_MENU" 2>/dev/null; then
+        # Oxirgi </Menu> ni topib oldiga qo'shish (sed $ — faqat oxirgi match)
+        sed -i '$ s|</Menu>|  <MergeFile type="path">/etc/xdg/menus/hacknow-applications.menu</MergeFile>\n</Menu>|' "$XFCE_MENU" 2>/dev/null || true
+    fi
+    echo "[HackNow OS] Menu kategoriyalar qo'shildi"
+fi
+
+# === "Install Debian" default ikonlarini to'liq o'chirish ===
+# calamares-settings-debian paketi bu fayllarni yaratadi — dpkg-divert bilan bloklash
+for f in /usr/share/applications/calamares.desktop \
+         /usr/share/applications/install-debian.desktop \
+         /usr/share/applications/calamares-install-debian.desktop; do
+    dpkg-divert --local --rename --divert "${f}.disabled" "$f" 2>/dev/null || true
+    rm -f "$f" 2>/dev/null || true
+done
+# Desktop va skel papkalardan ham
+rm -f "$HACKNOW_HOME/Desktop/install-debian.desktop" 2>/dev/null || true
+rm -f "$HACKNOW_HOME/Desktop/calamares.desktop" 2>/dev/null || true
+rm -f /etc/skel/Desktop/install-debian.desktop 2>/dev/null || true
+rm -f /etc/skel/Desktop/calamares.desktop 2>/dev/null || true
+# Desktop papkadagi barcha calamares related fayllar
+find "$HACKNOW_HOME/Desktop" /etc/skel/Desktop -name "*calamares*" -o -name "*install-debian*" 2>/dev/null | xargs rm -f 2>/dev/null || true
+
+# === Yakuniy ownership (barcha fayllar yaratilgandan keyin) ===
+chown -R hacknow:hacknow "$HACKNOW_HOME/"
+
+echo "[HackNow OS] Tizim sozlamalari tugadi"

@@ -1,0 +1,60 @@
+#!/bin/sh
+# HackNow OS - Go asosidagi pentesting vositalari
+# go install orqali o'rnatiladi
+
+set -e
+
+echo "[HackNow OS] Go vositalari o'rnatilmoqda..."
+
+# Go mavjudligini tekshirish
+if ! command -v go >/dev/null 2>&1; then
+    echo "[WARN] Go topilmadi, Go vositalarini o'tkazib yuborilmoqda"
+    exit 0
+fi
+
+export GOPATH=/opt/go
+export GOBIN=/usr/local/bin
+export PATH="$PATH:/usr/local/go/bin:$GOPATH/bin"
+
+# Go module cache uchun
+export GOMODCACHE=/tmp/gomodcache
+
+# Vositalarni o'rnatish
+echo "[*] nuclei o'rnatilmoqda..."
+go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest \
+    || echo "[WARN] nuclei o'rnatilmadi"
+
+echo "[*] subfinder o'rnatilmoqda..."
+go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest \
+    || echo "[WARN] subfinder o'rnatilmadi"
+
+echo "[*] httpx o'rnatilmoqda..."
+go install github.com/projectdiscovery/httpx/cmd/httpx@latest \
+    || echo "[WARN] httpx o'rnatilmadi"
+
+echo "[*] ffuf o'rnatilmoqda..."
+go install github.com/ffuf/ffuf/v2@latest \
+    || echo "[WARN] ffuf o'rnatilmadi"
+
+echo "[*] waybackurls o'rnatilmoqda..."
+go install github.com/tomnomnom/waybackurls@latest \
+    || echo "[WARN] waybackurls o'rnatilmadi"
+
+echo "[*] anew o'rnatilmoqda..."
+go install github.com/tomnomnom/anew@latest \
+    || echo "[WARN] anew o'rnatilmadi"
+
+echo "[*] gf o'rnatilmoqda..."
+go install github.com/tomnomnom/gf@latest \
+    || echo "[WARN] gf o'rnatilmadi"
+
+# Barcha binary'larni /usr/local/bin ga ko'chirish
+if [ -d "$GOPATH/bin" ]; then
+    cp -f "$GOPATH/bin/"* /usr/local/bin/ 2>/dev/null || true
+    echo "[HackNow OS] Go binary'lar /usr/local/bin ga ko'chirildi"
+fi
+
+# Vaqtinchalik modul cache ni tozalash
+rm -rf /tmp/gomodcache
+
+echo "[HackNow OS] Go vositalari o'rnatildi"

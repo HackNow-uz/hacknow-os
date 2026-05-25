@@ -1,0 +1,20 @@
+# === Razvedka (Reconnaissance) ===
+# Tarmoq va xost kashfiyoti
+
+# --- Debian repos ---
+nmap
+masscan
+netdiscover
+dnsrecon
+dnsenum
+dnsmap
+whois
+fierce
+recon-ng
+dmitri
+
+# --- Custom install (scripts/) ---
+# amass              → scripts/install-amass.sh
+# subfinder          → Go install (build hook)
+# httpx              → Go install (build hook)
+# theHarvester       → pip install

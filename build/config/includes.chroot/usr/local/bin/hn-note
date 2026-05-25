@@ -1,0 +1,45 @@
+#!/bin/bash
+# hn-note — Tezda pentest noti yaratish
+# Avtomatik markdown template bilan
+
+DIR="$HOME/Pentest/Reports"
+mkdir -p "$DIR"
+
+TARGET="${1:-$TARGET}"
+[ -z "$TARGET" ] && TARGET="quick-note"
+SAFE=$(echo "$TARGET" | tr -dc 'a-zA-Z0-9._-')
+FILE="$DIR/$(date +%Y-%m-%d)_${SAFE}.md"
+
+if [ ! -f "$FILE" ]; then
+    cat > "$FILE" << 'TMPL'
+# Pentest Note — TARGET_PLACEHOLDER
+
+**Date:** DATE_PLACEHOLDER
+**Tester:** TESTER_PLACEHOLDER
+
+## Recon
+
+### Nmap
+
+```bash
+nmap -sC -sV TARGET_PLACEHOLDER
+```
+
+## Findings
+
+- [ ] Finding 1
+
+## Exploitation
+
+## Post-exploitation
+
+## Loot
+
+## References
+
+TMPL
+    sed -i "s|TARGET_PLACEHOLDER|$TARGET|g; s|DATE_PLACEHOLDER|$(date +%Y-%m-%d)|g; s|TESTER_PLACEHOLDER|$(whoami)|g" "$FILE"
+fi
+
+# Editor ochish
+${EDITOR:-vim} "$FILE"

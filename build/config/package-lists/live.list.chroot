@@ -1,0 +1,9 @@
+# === Kernel ===
+linux-image-amd64
+linux-headers-amd64
+
+# === Live system ===
+live-boot
+live-config
+live-config-systemd
+systemd-sysv

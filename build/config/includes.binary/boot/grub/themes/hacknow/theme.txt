@@ -1,0 +1,57 @@
+# HackNow OS GRUB Theme
+# Background allaqachon logo + tagline o'z ichiga oladi
+
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#0a0a0a"
+
+terminal-font: "DejaVu Sans Mono Regular 14"
+message-font: "DejaVu Sans Regular 14"
+message-color: "#e0e0e0"
+message-bg-color: "#0a0a0a"
+
+# === Boot menu (pastki markazda, background brandingdan pastda) ===
++ boot_menu {
+    left = 28%
+    top = 52%
+    width = 44%
+    height = 35%
+    item_font = "DejaVu Sans Regular 15"
+    item_color = "#8892a4"
+    selected_item_font = "DejaVu Sans Bold 15"
+    selected_item_color = "#ffffff"
+    selected_item_pixmap_style = "select_*.png"
+    item_height = 32
+    item_padding = 12
+    item_spacing = 6
+    icon_width = 0
+    icon_height = 0
+    scrollbar = false
+}
+
+# === Timeout progress bar ===
++ progress_bar {
+    id = "__timeout__"
+    left = 33%
+    top = 100%-50
+    width = 34%
+    height = 4
+    fg_color = "#FF1744"
+    bg_color = "#111111"
+    border_color = "#1a1a1a"
+    text_color = "#8892a4"
+    font = "DejaVu Sans Regular 10"
+    text = "@TIMEOUT_NOTIFICATION_LONG@"
+}
+
+# === Footer ===
++ label {
+    left = 0
+    top = 100%-30
+    width = 100%
+    height = 20
+    align = "center"
+    text = "hacknow.uz"
+    color = "#3a4255"
+    font = "DejaVu Sans Regular 10"
+}

@@ -1,0 +1,236 @@
+name: Build HackNow OS ISO
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Build mode (minimal or full)'
+        required: false
+        default: 'minimal'
+        type: choice
+        options:
+          - minimal
+          - full
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Free up disk space
+        run: |
+          # GitHub runner'da ~14GB bo'sh joy chiqarish
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc 2>/dev/null || true
+          sudo apt-get autoremove -y 2>/dev/null || true
+          sudo apt-get clean
+          df -h /
+
+      - name: Install Docker (agar yo'q bo'lsa)
+        run: |
+          if ! command -v docker >/dev/null 2>&1; then
+            curl -fsSL https://get.docker.com | sudo sh
+          fi
+          docker --version
+
+      - name: Show project info
+        run: |
+          echo "═══════════════════════════════════════════"
+          echo "  HackNow OS — GitHub Actions Build"
+          echo "═══════════════════════════════════════════"
+          echo "Mode: ${{ inputs.mode || 'minimal' }}"
+          echo "Ref:  ${{ github.ref }}"
+          echo "═══════════════════════════════════════════"
+          # Package list count
+          echo ""
+          echo "Package lists:"
+          for f in config/package-lists/*.list.chroot; do
+            count=$(grep -v '^#\|^$' "$f" | wc -l)
+            echo "  $(basename "$f"): $count"
+          done
+
+      - name: Make scripts executable
+        run: |
+          chmod +x docker-build.sh scripts/*.sh 2>/dev/null || true
+          chmod +x config/hooks/live/*.hook.chroot 2>/dev/null || true
+          chmod +x config/includes.chroot/usr/local/bin/* 2>/dev/null || true
+
+      - name: Build ISO (Docker)
+        run: |
+          # Docker orqali build — local dev bilan bir xil
+          sudo bash ./docker-build.sh ${{ inputs.mode || 'minimal' }}
+          # Docker root bilan yaratadi — ownership'ni runner user'ga qaytarish
+          sudo chown -R $(id -u):$(id -g) output/
+        env:
+          DOCKER_BUILDKIT: 1
+
+      - name: Verify ISO
+        id: verify
+        run: |
+          ISO=$(ls -1 output/*.iso 2>/dev/null | head -1)
+          if [ -z "$ISO" ]; then
+            echo "::error::ISO topilmadi! Build muvaffaqiyatsiz."
+            ls -la output/ 2>/dev/null || true
+            exit 1
+          fi
+
+          SIZE=$(du -h "$ISO" | cut -f1)
+          SIZE_BYTES=$(stat -c%s "$ISO")
+          SHA256=$(sha256sum "$ISO" | cut -d' ' -f1)
+          NAME=$(basename "$ISO")
+
+          # Minimal ISO hajmi tekshiruvi (>500MB bo'lishi kerak)
+          if [ "$SIZE_BYTES" -lt 524288000 ]; then
+            echo "::warning::ISO juda kichik ($SIZE) — to'liq build bo'lmagan bo'lishi mumkin"
+          fi
+
+          {
+            echo "iso_name=$NAME"
+            echo "iso_path=$ISO"
+            echo "iso_size=$SIZE"
+            echo "iso_sha256=$SHA256"
+          } >> "$GITHUB_OUTPUT"
+
+          # GITHUB_ENV uchun ham
+          {
+            echo "ISO_NAME=$NAME"
+            echo "ISO_SIZE=$SIZE"
+            echo "ISO_SHA256=$SHA256"
+          } >> "$GITHUB_ENV"
+
+          echo "✓ ISO: $NAME ($SIZE)"
+          echo "✓ SHA256: $SHA256"
+
+      - name: Upload ISO artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hacknow-os-iso-${{ steps.verify.outputs.iso_sha256 }}
+          path: output/*.iso
+          retention-days: 14
+          compression-level: 0
+
+      - name: Upload SHA256 checksum
+        if: success()
+        run: |
+          cd output
+          sha256sum *.iso > SHA256SUMS
+
+      - name: Upload checksums
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hacknow-os-checksums
+          path: output/SHA256SUMS
+          retention-days: 30
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-${{ github.run_id }}
+          path: output/build.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Build summary
+        if: success()
+        run: |
+          {
+            echo "## HackNow OS Build"
+            echo ""
+            echo "| Maydon | Qiymat |"
+            echo "|--------|--------|"
+            echo "| ISO | \`$ISO_NAME\` |"
+            echo "| Hajm | $ISO_SIZE |"
+            echo "| SHA256 | \`$ISO_SHA256\` |"
+            echo "| Mode | ${{ inputs.mode || 'minimal' }} |"
+            echo "| Commit | \`${{ github.sha }}\` |"
+            echo ""
+            echo "### Foydalanish"
+            echo ""
+            echo '```bash'
+            echo "# Yuklab olib SHA256 tekshiring:"
+            echo "echo \"$ISO_SHA256  $ISO_NAME\" | sha256sum -c"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Update latest release (har safar main push'da)
+        if: github.ref == 'refs/heads/main' && success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "HackNow OS — Latest Build"
+          prerelease: true
+          make_latest: false
+          files: |
+            output/*.iso
+            output/SHA256SUMS
+          body: |
+            ## HackNow OS — Eng oxirgi build
+
+            **Avtomatik yangilanadi** — har safar `main` branch'ga push qilinganda.
+
+            | Maydon | Qiymat |
+            |--------|--------|
+            | ISO | `${{ env.ISO_NAME }}` |
+            | Hajm | ${{ env.ISO_SIZE }} |
+            | SHA256 | `${{ env.ISO_SHA256 }}` |
+            | Commit | `${{ github.sha }}` |
+            | Sana | ${{ github.event.head_commit.timestamp }} |
+
+            ### Foydalanish
+
+            ```bash
+            sha256sum -c SHA256SUMS
+            sudo dd if=${{ env.ISO_NAME }} of=/dev/sdX bs=4M status=progress
+            ```
+
+            - User: `hacknow` / Parol: `hacknow`
+
+            > **Diqqat:** Bu dev build — barqaror versiya uchun rasmiy release'ni ishlating.
+
+      - name: Create versioned release (tag push'da)
+        if: startsWith(github.ref, 'refs/tags/v') && success()
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            output/*.iso
+            output/SHA256SUMS
+          generate_release_notes: true
+          body: |
+            ## HackNow OS ${{ github.ref_name }}
+
+            **HackNow OS** — O'zbekiston pentesting va kiberxavfsizlik distributivi.
+
+            | Maydon | Qiymat |
+            |--------|--------|
+            | ISO | `${{ env.ISO_NAME }}` |
+            | Hajm | ${{ env.ISO_SIZE }} |
+            | SHA256 | `${{ env.ISO_SHA256 }}` |
+
+            ### O'rnatish
+
+            ```bash
+            sha256sum -c SHA256SUMS
+            sudo dd if=${{ env.ISO_NAME }} of=/dev/sdX bs=4M status=progress
+            ```
+
+            - User: `hacknow` / Parol: `hacknow`
+            - SSH default OFF (yoqish: `sudo systemctl start ssh`)
+
+            > **Diqqat:** Alpha versiya — production uchun emas.

@@ -1,0 +1,295 @@
+# HackNow-Dark GTK2 Theme
+# HackNow OS — Cyberpunk Dark Red
+# Compatible with GTK 2.x apps (Firefox legacy, GIMP, Wireshark, etc.)
+
+gtk-color-scheme = "
+  bg_color:#0a0a0a
+  fg_color:#f0f0f0
+  base_color:#0f0f10
+  text_color:#f0f0f0
+  selected_bg_color:#FF1744
+  selected_fg_color:#ffffff
+  tooltip_bg_color:#111827
+  tooltip_fg_color:#f0f0f0
+  link_color:#FF1744
+"
+
+gtk-auto-mnemonics       = 1
+gtk-primary-button-warps-slider = 0
+
+# ─── Base style ──────────────────────────────────────────────────────────────
+style "hacknow-base" {
+  bg[NORMAL]      = "#0a0a0a"
+  bg[PRELIGHT]    = "#1a2332"
+  bg[ACTIVE]      = "#111827"
+  bg[SELECTED]    = "#FF1744"
+  bg[INSENSITIVE] = "#0f0f10"
+
+  fg[NORMAL]      = "#f0f0f0"
+  fg[PRELIGHT]    = "#f0f0f0"
+  fg[ACTIVE]      = "#f0f0f0"
+  fg[SELECTED]    = "#ffffff"
+  fg[INSENSITIVE] = "#5a6a84"
+
+  base[NORMAL]      = "#0f0f10"
+  base[PRELIGHT]    = "#1a2332"
+  base[ACTIVE]      = "#111827"
+  base[SELECTED]    = "#FF1744"
+  base[INSENSITIVE] = "#0a0a0a"
+
+  text[NORMAL]      = "#f0f0f0"
+  text[PRELIGHT]    = "#f0f0f0"
+  text[ACTIVE]      = "#f0f0f0"
+  text[SELECTED]    = "#ffffff"
+  text[INSENSITIVE] = "#5a6a84"
+
+  GtkWidget::focus-padding          = 0
+  GtkWidget::focus-line-width       = 1
+  GtkWidget::focus-line-pattern     = "\1\1"
+  GtkWidget::interior-focus         = 1
+  GtkWidget::link-color             = "#FF1744"
+  GtkWidget::visited-link-color     = "#FF6680"
+
+  GtkScrollbar::min-slider-length   = 30
+  GtkScrollbar::slider-width        = 7
+  GtkScrollbar::has-backward-stepper = 0
+  GtkScrollbar::has-forward-stepper  = 0
+  GtkScrollbar::has-secondary-backward-stepper = 0
+  GtkScrollbar::has-secondary-forward-stepper  = 0
+
+  GtkCheckButton::indicator-size    = 16
+  GtkRadioButton::indicator-size    = 16
+
+  GtkTreeView::expander-size        = 12
+  GtkTreeView::horizontal-separator = 4
+  GtkTreeView::vertical-separator   = 2
+  GtkTreeView::grid-line-width      = 1
+  GtkTreeView::odd-row-color        = "#0a0a0a"
+  GtkTreeView::even-row-color       = "#0f0f10"
+
+  GtkNotebook::tab-overlap          = 0
+
+  engine "clearlooks" {
+    colorize_scrollbar = TRUE
+    reliefstyle        = 0
+    progressbarstyle   = 1
+    style              = GUMMY
+  }
+}
+
+# ─── Button style ─────────────────────────────────────────────────────────────
+style "hacknow-button" inherits "hacknow-base" {
+  bg[NORMAL]      = "#0f0f10"
+  bg[PRELIGHT]    = "#1a2332"
+  bg[ACTIVE]      = "#FF1744"
+  bg[INSENSITIVE] = "#0a0a0a"
+
+  fg[NORMAL]      = "#f0f0f0"
+  fg[PRELIGHT]    = "#f0f0f0"
+  fg[ACTIVE]      = "#ffffff"
+  fg[INSENSITIVE] = "#5a6a84"
+}
+
+# ─── Default button (suggested-action equivalent) ────────────────────────────
+style "hacknow-default-button" inherits "hacknow-button" {
+  bg[NORMAL]   = "#FF1744"
+  bg[PRELIGHT] = "#ff2d55"
+  bg[ACTIVE]   = "#cc1238"
+
+  fg[NORMAL]   = "#ffffff"
+  fg[PRELIGHT] = "#ffffff"
+  fg[ACTIVE]   = "#ffffff"
+}
+
+# ─── Menubar + menus ──────────────────────────────────────────────────────────
+style "hacknow-menu" inherits "hacknow-base" {
+  bg[NORMAL]   = "#0a0a0a"
+  bg[PRELIGHT] = "#FF1744"
+  bg[SELECTED] = "#FF1744"
+
+  fg[NORMAL]   = "#f0f0f0"
+  fg[PRELIGHT] = "#ffffff"
+  fg[SELECTED] = "#ffffff"
+
+  text[NORMAL]   = "#f0f0f0"
+  text[PRELIGHT] = "#ffffff"
+
+  GtkMenu::horizontal-padding = 0
+  GtkMenu::vertical-padding   = 4
+}
+
+style "hacknow-menubar" inherits "hacknow-base" {
+  bg[NORMAL]   = "#111827"
+  bg[PRELIGHT] = "#FF1744"
+
+  fg[NORMAL]   = "#f0f0f0"
+  fg[PRELIGHT] = "#ffffff"
+}
+
+style "hacknow-menubar-item" inherits "hacknow-base" {
+  bg[NORMAL]   = "#111827"
+  bg[PRELIGHT] = "#FF1744"
+  bg[ACTIVE]   = "#FF1744"
+
+  fg[NORMAL]   = "#f0f0f0"
+  fg[PRELIGHT] = "#ffffff"
+  fg[ACTIVE]   = "#ffffff"
+}
+
+style "hacknow-menu-separator" inherits "hacknow-base" {
+  bg[NORMAL]   = "#1a1a1a"
+  fg[NORMAL]   = "#1a1a1a"
+  GtkSeparatorMenuItem::horizontal-padding = 0
+}
+
+# ─── Toolbar ──────────────────────────────────────────────────────────────────
+style "hacknow-toolbar" inherits "hacknow-base" {
+  bg[NORMAL] = "#111827"
+  bg[ACTIVE] = "#0f0f10"
+
+  GtkToolbar::internal-padding  = 4
+  GtkToolbar::space-size        = 10
+  GtkToolbar::space-style       = line
+}
+
+# ─── Entry (text fields) ─────────────────────────────────────────────────────
+style "hacknow-entry" inherits "hacknow-base" {
+  bg[NORMAL]      = "#0f0f10"
+  bg[ACTIVE]      = "#0f0f10"
+  bg[INSENSITIVE] = "#0a0a0a"
+
+  base[NORMAL]    = "#0f0f10"
+  base[ACTIVE]    = "#111827"
+  base[PRELIGHT]  = "#111827"
+  base[SELECTED]  = "#FF1744"
+
+  text[NORMAL]    = "#f0f0f0"
+  text[PRELIGHT]  = "#f0f0f0"
+  text[ACTIVE]    = "#f0f0f0"
+  text[SELECTED]  = "#ffffff"
+}
+
+# ─── Progressbar ─────────────────────────────────────────────────────────────
+style "hacknow-progressbar" inherits "hacknow-base" {
+  bg[NORMAL]   = "#1a2332"
+  bg[PRELIGHT] = "#FF1744"
+
+  fg[PRELIGHT] = "#ffffff"
+
+  GtkProgressBar::min-horizontal-bar-height = 8
+  GtkProgressBar::min-vertical-bar-width    = 8
+}
+
+# ─── Scrollbar ────────────────────────────────────────────────────────────────
+style "hacknow-scrollbar" inherits "hacknow-base" {
+  bg[NORMAL]   = "#0a0a0a"
+  bg[ACTIVE]   = "#0f0f10"
+  bg[PRELIGHT] = "#0f0f10"
+
+  fg[NORMAL]   = "#FF1744"
+  fg[PRELIGHT] = "#ff2d55"
+  fg[ACTIVE]   = "#FF1744"
+
+  GtkRange::slider-width        = 8
+  GtkRange::stepper-size        = 0
+  GtkScrollbar::min-slider-length = 30
+}
+
+# ─── Treeview / listbox ──────────────────────────────────────────────────────
+style "hacknow-treeview" inherits "hacknow-base" {
+  base[NORMAL]   = "#0f0f10"
+  base[ACTIVE]   = "#1a2332"
+  base[PRELIGHT] = "#111827"
+  base[SELECTED] = "#FF1744"
+
+  text[NORMAL]   = "#f0f0f0"
+  text[ACTIVE]   = "#f0f0f0"
+  text[PRELIGHT] = "#f0f0f0"
+  text[SELECTED] = "#ffffff"
+}
+
+style "hacknow-treeview-header" inherits "hacknow-base" {
+  bg[NORMAL]   = "#111827"
+  bg[PRELIGHT] = "#1a2332"
+  bg[ACTIVE]   = "#1a2332"
+
+  fg[NORMAL]   = "#a4b1cd"
+  fg[PRELIGHT] = "#f0f0f0"
+}
+
+# ─── Notebook ─────────────────────────────────────────────────────────────────
+style "hacknow-notebook" inherits "hacknow-base" {
+  bg[NORMAL]   = "#0a0a0a"
+  bg[ACTIVE]   = "#111827"
+  bg[PRELIGHT] = "#1a2332"
+
+  fg[NORMAL]   = "#5a6a84"
+  fg[ACTIVE]   = "#f0f0f0"
+  fg[PRELIGHT] = "#a4b1cd"
+}
+
+# ─── Tooltip ──────────────────────────────────────────────────────────────────
+style "hacknow-tooltip" inherits "hacknow-base" {
+  bg[NORMAL]   = "#111827"
+  fg[NORMAL]   = "#f0f0f0"
+
+  GtkWidget::link-color         = "#FF1744"
+}
+
+# ─── Window decorations ───────────────────────────────────────────────────────
+style "hacknow-frame" inherits "hacknow-base" {
+  bg[NORMAL]   = "#0a0a0a"
+  bg[ACTIVE]   = "#111827"
+  bg[PRELIGHT] = "#1a2332"
+}
+
+# ─── Statusbar ────────────────────────────────────────────────────────────────
+style "hacknow-statusbar" inherits "hacknow-base" {
+  bg[NORMAL]  = "#111827"
+  fg[NORMAL]  = "#5a6a84"
+  font_name   = "Noto Sans 8"
+}
+
+# ─── Apply styles ─────────────────────────────────────────────────────────────
+class "GtkWidget"              style "hacknow-base"
+class "GtkWindow"              style "hacknow-base"
+class "GtkDialog"              style "hacknow-base"
+class "GtkButton"              style "hacknow-button"
+class "GtkToggleButton"        style "hacknow-button"
+class "GtkCheckButton"         style "hacknow-button"
+class "GtkRadioButton"         style "hacknow-button"
+class "GtkEntry"               style "hacknow-entry"
+class "GtkSpinButton"          style "hacknow-entry"
+class "GtkComboBox"            style "hacknow-button"
+class "GtkComboBoxEntry"       style "hacknow-entry"
+class "GtkMenuBar"             style "hacknow-menubar"
+class "GtkMenu"                style "hacknow-menu"
+class "GtkMenuItem"            style "hacknow-menu"
+class "GtkSeparatorMenuItem"   style "hacknow-menu-separator"
+class "GtkToolbar"             style "hacknow-toolbar"
+class "GtkProgressBar"         style "hacknow-progressbar"
+class "GtkScrollbar"           style "hacknow-scrollbar"
+class "GtkHScrollbar"          style "hacknow-scrollbar"
+class "GtkVScrollbar"          style "hacknow-scrollbar"
+class "GtkScrolledWindow"      style "hacknow-base"
+class "GtkTreeView"            style "hacknow-treeview"
+class "GtkNotebook"            style "hacknow-notebook"
+class "GtkStatusbar"           style "hacknow-statusbar"
+class "GtkFrame"               style "hacknow-frame"
+class "GtkViewport"            style "hacknow-base"
+class "GtkPaned"               style "hacknow-base"
+class "GtkExpander"            style "hacknow-base"
+
+# Menubar items
+widget_class "*<GtkMenuBar>*<GtkMenuItem>" style "hacknow-menubar-item"
+
+# Treeview column headers
+widget_class "*<GtkTreeView>*<GtkButton>"  style "hacknow-treeview-header"
+
+# Default (primary) buttons
+widget_class "*<GtkButtonBox>*<GtkButton>" style:1 "hacknow-default-button"
+
+# Tooltip windows
+widget "gtk-tooltip*"   style "hacknow-tooltip"
+widget "gtk-tooltips*"  style "hacknow-tooltip"
+class  "GtkTipsWindow"  style "hacknow-tooltip"

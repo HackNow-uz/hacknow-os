@@ -1,0 +1,9 @@
+Package: hacknow-os-meta
+Version: 0.1.0
+Section: metapackages
+Priority: optional
+Architecture: all
+Depends: nmap, masscan, wireshark, sqlmap, nikto, john, hashcat, hydra, gdb, radare2, binwalk, aircrack-ng, foremost, exiftool
+Maintainer: HackNow Team <hacknow.uz@gmail.com>
+Description: HackNow OS meta package
+ Installs all HackNow OS pentesting tools from Debian repos.

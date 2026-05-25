@@ -1,0 +1,78 @@
+#!/bin/bash
+# hn-vpn — HackNow VPN ulanish
+# Usage: hn-vpn connect|disconnect|status
+set -u
+
+VERSION="0.1.0"
+CONFIG_DIR="$HOME/.config/hacknow"
+VPN_DIR="$CONFIG_DIR/vpn"
+PID_FILE="/var/run/hn-vpn.pid"
+LOG_FILE="/tmp/hn-vpn.log"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+case "${1:-}" in
+    connect)
+        CONFIG="${2:-$VPN_DIR/hacknow.ovpn}"
+        if [ ! -f "$CONFIG" ]; then
+            echo -e "${RED}[!] VPN config topilmadi: $CONFIG${NC}"
+            echo "Avval lab'ga ulaning: hn-lab-connect start <lab-id>"
+            exit 1
+        fi
+
+        # Mavjud HackNow VPN tekshirish (boshqa OpenVPN'lar emas)
+        if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+            echo -e "${YELLOW}[!] HackNow VPN allaqachon ulangan (PID $(cat "$PID_FILE"))${NC}"
+            exit 0
+        fi
+
+        echo -e "${YELLOW}[*] VPN ulanmoqda...${NC}"
+        sudo openvpn \
+            --config "$CONFIG" \
+            --daemon hn-vpn \
+            --writepid "$PID_FILE" \
+            --log "$LOG_FILE"
+
+        sleep 3
+        if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+            echo -e "${GREEN}[✓] VPN ulandi! (PID $(cat "$PID_FILE"))${NC}"
+            IP=$(ip addr show tun0 2>/dev/null | grep 'inet ' | awk '{print $2}' || echo "")
+            echo -e "  Tun0 IP: ${CYAN}${IP:-N/A}${NC}"
+        else
+            echo -e "${RED}[!] VPN ulanmadi. Log: $LOG_FILE${NC}"
+            exit 1
+        fi
+        ;;
+    disconnect)
+        # Faqat HackNow VPN process'ini o'chirish (killall emas)
+        if [ -f "$PID_FILE" ]; then
+            PID=$(cat "$PID_FILE")
+            if kill -0 "$PID" 2>/dev/null; then
+                sudo kill "$PID" 2>/dev/null
+                sleep 1
+                sudo rm -f "$PID_FILE"
+                echo -e "${GREEN}[✓] HackNow VPN uzildi.${NC}"
+            else
+                echo -e "${YELLOW}[*] HackNow VPN allaqachon o'chirilgan.${NC}"
+                sudo rm -f "$PID_FILE"
+            fi
+        else
+            echo -e "${YELLOW}[*] HackNow VPN ishlamayapti.${NC}"
+        fi
+        ;;
+    status)
+        if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+            IP=$(ip addr show tun0 2>/dev/null | grep 'inet ' | awk '{print $2}' || echo "")
+            echo -e "${GREEN}[✓] HackNow VPN faol${NC} (PID $(cat "$PID_FILE")) — tun0: ${IP:-N/A}"
+        else
+            echo -e "${YELLOW}[*] HackNow VPN o'chirilgan${NC}"
+        fi
+        ;;
+    *)
+        echo "Foydalanish: hn-vpn [connect|disconnect|status] [config-fayl]"
+        ;;
+esac

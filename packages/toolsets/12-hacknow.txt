@@ -1,0 +1,8 @@
+# === HackNow Maxsus Toollar ===
+# Bu toollar hacknow-os-tools reposidan keladi
+
+# hn-lab-connect      — HackNow lab muhitiga ulanish (VPN + SSH)
+# hn-vpn              — HackNow VPN client wrapper
+# hn-submit           — CTF flag submission CLI
+# hn-update           — HackNow OS yangilash skripti
+# hn-info             — Tizim ma'lumotlari va versiya

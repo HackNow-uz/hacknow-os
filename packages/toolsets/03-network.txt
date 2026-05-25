@@ -1,0 +1,21 @@
+# === Tarmoq Hujumlari ===
+
+# --- Debian repos ---
+wireshark
+tshark
+tcpdump
+ettercap-text-only
+ettercap-graphical
+netcat-openbsd
+socat
+ncat
+proxychains4
+tor
+torsocks
+arpwatch
+arping
+hping3
+macchanger
+mitmproxy
+responder
+bettercap

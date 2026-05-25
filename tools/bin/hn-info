@@ -1,0 +1,39 @@
+#!/bin/bash
+# hn-info — HackNow OS tizim ma'lumotlari
+
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+OS_VERSION=$(cat /etc/hacknow-version 2>/dev/null || echo "0.1.0-dev")
+KERNEL=$(uname -r)
+ARCH=$(uname -m)
+UPTIME=$(uptime -p 2>/dev/null || uptime)
+MEM=$(free -h | awk '/^Mem:/{print $3"/"$2}')
+DISK=$(df -h / | awk 'NR==2{print $3"/"$2}')
+IP_LOCAL=$(hostname -I 2>/dev/null | awk '{print $1}')
+IP_TUN=$(ip addr show tun0 2>/dev/null | grep 'inet ' | awk '{print $2}' | cut -d/ -f1)
+
+echo -e "${CYAN}"
+echo "  ╦ ╦╔═╗╔═╗╦╔═╔╗╔╔═╗╦ ╦  ╔═╗╔═╗"
+echo "  ╠═╣╠═╣║  ╠╩╗║║║║ ║║║║  ║ ║╚═╗"
+echo "  ╩ ╩╩ ╩╚═╝╩ ╩╝╚╝╚═╝╚╩╝  ╚═╝╚═╝"
+echo -e "${NC}"
+echo -e "  ${GREEN}Version:${NC}  $OS_VERSION"
+echo -e "  ${GREEN}Kernel:${NC}   $KERNEL ($ARCH)"
+echo -e "  ${GREEN}Uptime:${NC}   $UPTIME"
+echo -e "  ${GREEN}RAM:${NC}      $MEM"
+echo -e "  ${GREEN}Disk:${NC}     $DISK"
+echo -e "  ${GREEN}Local IP:${NC} ${IP_LOCAL:-N/A}"
+[ -n "$IP_TUN" ] && echo -e "  ${GREEN}VPN IP:${NC}   $IP_TUN"
+echo ""
+
+# Tool count
+TOOL_COUNT=0
+for cmd in nmap sqlmap hydra john hashcat wireshark msfconsole nuclei ffuf gobuster ghidra burpsuite; do
+    command -v "$cmd" &>/dev/null && TOOL_COUNT=$((TOOL_COUNT + 1))
+done
+echo -e "  ${YELLOW}Aniqlangan toollar:${NC} $TOOL_COUNT"
+echo ""
+echo -e "  ${CYAN}https://hacknow.uz${NC} | ${CYAN}t.me/hacknow_uz${NC}"

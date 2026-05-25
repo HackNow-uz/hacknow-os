@@ -1,0 +1,10 @@
+# === OSINT ===
+
+# --- Debian repos ---
+maltego
+spiderfoot
+
+# --- Custom install ---
+# sherlock           → pip install
+# holehe             → pip install
+# maigret            → pip install

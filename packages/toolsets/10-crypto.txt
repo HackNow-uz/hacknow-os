@@ -1,0 +1,10 @@
+# === Kriptografiya ===
+
+# --- Debian repos ---
+hashid
+hash-identifier
+python3-pycryptodome
+
+# --- Custom install ---
+# CyberChef          → scripts/install-cyberchef.sh
+# RsaCtfTool         → scripts/install-rsactftool.sh

@@ -1,0 +1,14 @@
+// HackNow OS — live foydalanuvchi uchun calamares parolsiz ishga tushadi
+// Live ISO bootida `hacknow` foydalanuvchisi mavjud, lekin parol yo'q.
+// Bu qoida faqat live-build muhitida ishlatilishi kerak.
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.policykit.exec" &&
+        action.lookup("program") == "/usr/bin/calamares" &&
+        subject.user == "hacknow") {
+        return polkit.Result.YES;
+    }
+    if (action.id == "org.hacknow.calamares.run" &&
+        subject.user == "hacknow") {
+        return polkit.Result.YES;
+    }
+});

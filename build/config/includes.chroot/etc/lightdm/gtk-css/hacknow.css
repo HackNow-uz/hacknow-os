@@ -1,0 +1,54 @@
+/* HackNow LightDM Greeter — Frosted glass effect */
+
+#window {
+    background-color: rgba(10, 10, 10, 0.7);
+    border: 2px solid rgba(255, 23, 68, 0.6);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(255, 23, 68, 0.3);
+}
+
+entry {
+    background-color: rgba(17, 24, 39, 0.8);
+    color: #f0f0f0;
+    border: 1px solid rgba(255, 23, 68, 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-width: 280px;
+}
+
+entry:focus {
+    border-color: #FF1744;
+    box-shadow: 0 0 8px rgba(255, 23, 68, 0.4);
+}
+
+button {
+    background-color: #FF1744;
+    background-image: linear-gradient(135deg, #FF1744, #ff2d55);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 24px;
+    font-weight: bold;
+    transition: all 0.15s ease;
+}
+
+button:hover {
+    background-image: linear-gradient(135deg, #ff2d55, #FF6680);
+    box-shadow: 0 4px 12px rgba(255, 23, 68, 0.5);
+}
+
+#panel_window {
+    background-color: rgba(10, 10, 10, 0.85);
+    color: #f0f0f0;
+}
+
+#login_window {
+    background-color: rgba(10, 10, 10, 0.6);
+}
+
+#user_combo {
+    color: #FF1744;
+    font-weight: bold;
+}

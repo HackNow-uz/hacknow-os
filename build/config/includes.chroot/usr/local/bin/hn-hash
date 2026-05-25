@@ -1,0 +1,53 @@
+#!/bin/bash
+# hn-hash — Multiple hash hisoblash
+# Foydalanish: hn-hash <file_yoki_string>
+
+if [ -z "$1" ]; then
+    echo "Foydalanish: hn-hash <file>"
+    echo "         echo 'string' | hn-hash -"
+    exit 1
+fi
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+if [ "$1" = "-" ]; then
+    # Stdin
+    DATA=$(cat)
+    echo ""
+    echo -e "${CYAN}Input:${NC} ${DATA:0:50}..."
+    echo ""
+    echo -e "${GREEN}MD5:${NC}     $(echo -n "$DATA" | md5sum | cut -d' ' -f1)"
+    echo -e "${GREEN}SHA1:${NC}    $(echo -n "$DATA" | sha1sum | cut -d' ' -f1)"
+    echo -e "${GREEN}SHA256:${NC}  $(echo -n "$DATA" | sha256sum | cut -d' ' -f1)"
+    echo -e "${GREEN}SHA512:${NC}  $(echo -n "$DATA" | sha512sum | cut -d' ' -f1)"
+    # NTLM — passlib (python3-passlib) yoki Python (md4 + legacy provider)
+    NTLM=$(HN_DATA="$DATA" python3 -c "
+import os
+try:
+    from passlib.hash import nthash
+    print(nthash.hash(os.environ.get('HN_DATA','')))
+except ImportError:
+    try:
+        import hashlib
+        print(hashlib.new('md4', os.environ.get('HN_DATA','').encode('utf-16-le')).hexdigest())
+    except Exception:
+        pass
+" 2>/dev/null)
+    [ -n "$NTLM" ] && echo -e "${GREEN}NTLM:${NC}    $NTLM"
+elif [ -f "$1" ]; then
+    echo ""
+    echo -e "${CYAN}File:${NC} $1"
+    SIZE=$(du -h "$1" | cut -f1)
+    echo -e "${CYAN}Size:${NC} $SIZE"
+    echo ""
+    echo -e "${GREEN}MD5:${NC}     $(md5sum "$1" | cut -d' ' -f1)"
+    echo -e "${GREEN}SHA1:${NC}    $(sha1sum "$1" | cut -d' ' -f1)"
+    echo -e "${GREEN}SHA256:${NC}  $(sha256sum "$1" | cut -d' ' -f1)"
+    echo -e "${GREEN}SHA512:${NC}  $(sha512sum "$1" | cut -d' ' -f1)"
+else
+    echo -e "${RED}Fayl topilmadi:${NC} $1"
+    exit 1
+fi

@@ -1,0 +1,11 @@
+# === Simsiz Tarmoqlar ===
+
+# --- Debian repos ---
+aircrack-ng
+reaver
+pixiewps
+kismet
+wifite
+hostapd
+iw
+rfkill

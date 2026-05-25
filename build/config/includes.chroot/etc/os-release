@@ -1,0 +1,11 @@
+PRETTY_NAME="HackNow OS 0.1 (Bookworm)"
+NAME="HackNow OS"
+VERSION_ID="0.1"
+VERSION="0.1 (Bookworm)"
+VERSION_CODENAME=bookworm
+ID=hacknow
+ID_LIKE=debian
+HOME_URL="https://hacknow.uz"
+SUPPORT_URL="https://t.me/hacknow_uz"
+BUG_REPORT_URL="https://github.com/HackNow-uz/hacknow-os/issues"
+LOGO=hacknow-logo

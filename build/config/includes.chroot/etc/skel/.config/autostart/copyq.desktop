@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=CopyQ
+Comment=Advanced clipboard manager
+Exec=copyq --start-server
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

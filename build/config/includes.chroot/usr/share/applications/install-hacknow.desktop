@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=HackNow OS — O'rnatish
+Name[en]=Install HackNow OS
+GenericName=System Installer
+GenericName[en]=System Installer
+Comment=HackNow OS ni qattiq diskka o'rnatish
+Comment[en]=Install HackNow OS to your hard drive
+Icon=calamares
+Exec=sudo BROWSER=/usr/local/bin/hacknow-open-url calamares
+Categories=Qt;System;
+Terminal=false
+StartupNotify=true
+Keywords=installer;install;system;hacknow;
+NoDisplay=false

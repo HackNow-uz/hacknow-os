@@ -1,0 +1,172 @@
+#!/bin/sh
+# HackNow OS — Pentest tool'lar uchun .desktop fayllar yaratish
+# Har bir CLI tool'ni XFCE menu'da kategoriyalarga joylashtiradi
+set -e
+
+echo "[HackNow OS] Pentest tool menu yozuvlari yaratilmoqda..."
+
+APPS="/usr/share/applications"
+COUNT=0
+
+# make_entry cmd name comment category icon comment_uz
+make_entry() {
+    local cmd="$1" name="$2" comment="$3" cat="$4" icon="${5:-utilities-terminal}" comment_uz="$6"
+    command -v "$cmd" >/dev/null 2>&1 || return 0
+    [ -f "$APPS/hacknow-${cmd}.desktop" ] && return 0
+
+    cat > "$APPS/hacknow-${cmd}.desktop" << DESKTOP
+[Desktop Entry]
+Type=Application
+Name=$name
+Comment=$comment
+Comment[uz]=${comment_uz:-$comment}
+Exec=xfce4-terminal -T "$name" -e "hn-run $cmd"
+Icon=$icon
+Terminal=false
+Categories=$cat;
+StartupNotify=false
+DESKTOP
+    COUNT=$((COUNT + 1))
+}
+
+# ═══════════════════════════════════════
+# RECONNAISSANCE
+# ═══════════════════════════════════════
+make_entry nmap "Nmap" "Network scanner" "X-HackNow-Recon" "network-scanner" "Tarmoq skaneri"
+make_entry masscan "Masscan" "Fast port scanner" "X-HackNow-Recon" "" "Tezkor port skaneri"
+make_entry netdiscover "Netdiscover" "ARP reconnaissance" "X-HackNow-Recon" "" "ARP razvedkasi"
+make_entry zmap "Zmap" "Internet-wide scanner" "X-HackNow-Recon" "" "Internet skaneri"
+make_entry dnsrecon "DNSRecon" "DNS enumeration" "X-HackNow-Recon" "" "DNS sanab chiqish"
+make_entry dnsenum "DNSenum" "DNS enumeration" "X-HackNow-Recon" "" "DNS sanab chiqish"
+make_entry fierce "Fierce" "DNS reconnaissance" "X-HackNow-Recon" "" "DNS razvedkasi"
+make_entry fping "Fping" "Fast ping sweep" "X-HackNow-Recon" "" "Tezkor ping tekshiruvi"
+make_entry smbmap "SMBMap" "SMB share enumeration" "X-HackNow-Recon" "" "SMB ulushlarni sanash"
+make_entry nbtscan "NBTScan" "NetBIOS scanner" "X-HackNow-Recon" "" "NetBIOS skaneri"
+make_entry onesixtyone "OneSixtyOne" "SNMP scanner" "X-HackNow-Recon" "" "SNMP skaneri"
+make_entry recon-ng "Recon-ng" "OSINT framework" "X-HackNow-Recon" "" "OSINT platformasi"
+
+# ═══════════════════════════════════════
+# WEB SECURITY
+# ═══════════════════════════════════════
+make_entry sqlmap "SQLMap" "SQL injection tool" "X-HackNow-Web" "web-browser" "SQL in'ektsiya vositasi"
+make_entry nikto "Nikto" "Web server scanner" "X-HackNow-Web" "" "Web server skaneri"
+make_entry dirb "Dirb" "Web directory brute-forcer" "X-HackNow-Web" "" "Web katalog qidiruvchisi"
+make_entry wfuzz "Wfuzz" "Web fuzzer" "X-HackNow-Web" "" "Web fazzeri"
+make_entry whatweb "WhatWeb" "Web fingerprinting" "X-HackNow-Web" "" "Web barmoq izi"
+make_entry wafw00f "WAFw00f" "WAF detection" "X-HackNow-Web" "" "WAF aniqlash"
+make_entry sslscan "SSLScan" "SSL/TLS scanner" "X-HackNow-Web" "" "SSL/TLS skaneri"
+make_entry httpie "HTTPie" "HTTP client" "X-HackNow-Web" "" "HTTP mijozi"
+
+# ═══════════════════════════════════════
+# EXPLOITATION
+# ═══════════════════════════════════════
+make_entry msfconsole "Metasploit" "Exploitation framework" "X-HackNow-Exploit" "applications-development" "Ekspluatatsiya platformasi"
+make_entry nasm "NASM" "Assembler" "X-HackNow-Exploit" "" "Assembler"
+
+# ═══════════════════════════════════════
+# PASSWORD ATTACKS
+# ═══════════════════════════════════════
+make_entry john "John the Ripper" "Password cracker" "X-HackNow-Passwords" "dialog-password" "Parol buzuvchi"
+make_entry hashcat "Hashcat" "GPU password cracker" "X-HackNow-Passwords" "" "GPU parol buzuvchi"
+make_entry hydra "Hydra" "Online brute-forcer" "X-HackNow-Passwords" "" "Onlayn brut-fors"
+make_entry medusa "Medusa" "Parallel brute-forcer" "X-HackNow-Passwords" "" "Parallel brut-fors"
+make_entry ncrack "Ncrack" "Network auth cracker" "X-HackNow-Passwords" "" "Tarmoq autentifikatsiya buzuvchi"
+make_entry patator "Patator" "Multi-purpose brute-forcer" "X-HackNow-Passwords" "" "Ko'p maqsadli brut-fors"
+make_entry crunch "Crunch" "Wordlist generator" "X-HackNow-Passwords" "" "So'z ro'yxati generatori"
+make_entry cewl "CeWL" "Custom wordlist generator" "X-HackNow-Passwords" "" "Maxsus so'z ro'yxati generatori"
+make_entry hashid "HashID" "Hash identifier" "X-HackNow-Passwords" "" "Xesh identifikatori"
+
+# ═══════════════════════════════════════
+# NETWORK ATTACKS
+# ═══════════════════════════════════════
+make_entry ettercap "Ettercap" "MITM attack tool" "X-HackNow-Network" "network-wired" "MITM hujum vositasi"
+make_entry bettercap "Bettercap" "Network attack framework" "X-HackNow-Network" "" "Tarmoq hujum platformasi"
+make_entry mitmproxy "MITMProxy" "HTTP/S proxy" "X-HackNow-Network" "" "HTTP/S proksi"
+make_entry hping3 "Hping3" "Packet crafter" "X-HackNow-Network" "" "Paket yaratuvchi"
+make_entry yersinia "Yersinia" "Layer 2 attack tool" "X-HackNow-Network" "" "2-qatlam hujum vositasi"
+make_entry macchanger "MACchanger" "MAC address spoofer" "X-HackNow-Network" "" "MAC manzil almashtiruvchi"
+make_entry proxychains4 "ProxyChains" "Proxy routing" "X-HackNow-Network" "" "Proksi marshrutlash"
+make_entry socat "Socat" "Socket relay" "X-HackNow-Network" "" "Soket relesi"
+make_entry ncat "Ncat" "Netcat (Nmap)" "X-HackNow-Network" "" "Netcat (Nmap)"
+make_entry tcpdump "Tcpdump" "Packet capture" "X-HackNow-Network" "" "Paket ushlash"
+make_entry tshark "TShark" "CLI Wireshark" "X-HackNow-Network" "" "CLI Wireshark"
+make_entry sshuttle "SSHuttle" "SSH VPN" "X-HackNow-Network" "" "SSH VPN"
+make_entry dsniff "Dsniff" "Network sniffer" "X-HackNow-Network" "" "Tarmoq snifferi"
+
+# ═══════════════════════════════════════
+# WIRELESS
+# ═══════════════════════════════════════
+make_entry aircrack-ng "Aircrack-ng" "Wireless cracker" "X-HackNow-Wireless" "network-wireless" "Simsiz tarmoq buzuvchi"
+make_entry wifite "Wifite" "Automated WiFi attack" "X-HackNow-Wireless" "" "Avtomatik WiFi hujumi"
+make_entry reaver "Reaver" "WPS attack" "X-HackNow-Wireless" "" "WPS hujumi"
+make_entry horst "Horst" "Wireless scanner" "X-HackNow-Wireless" "" "Simsiz tarmoq skaneri"
+
+# ═══════════════════════════════════════
+# FORENSICS & STEGO
+# ═══════════════════════════════════════
+make_entry autopsy "Autopsy" "Digital forensics" "X-HackNow-Forensics" "drive-harddisk" "Raqamli forensika"
+make_entry binwalk "Binwalk" "Firmware analysis" "X-HackNow-Forensics" "" "Firmware tahlili"
+make_entry foremost "Foremost" "File carving" "X-HackNow-Forensics" "" "Fayl ajratish"
+make_entry scalpel "Scalpel" "File carving" "X-HackNow-Forensics" "" "Fayl ajratish"
+make_entry steghide "Steghide" "Steganography" "X-HackNow-Forensics" "" "Steganografiya"
+make_entry stegsnow "StegSnow" "Text steganography" "X-HackNow-Forensics" "" "Matn steganografiyasi"
+make_entry outguess "OutGuess" "Steganography" "X-HackNow-Forensics" "" "Steganografiya"
+make_entry exiftool "ExifTool" "Metadata extractor" "X-HackNow-Forensics" "" "Metadata ajratuvchi"
+make_entry testdisk "TestDisk" "Partition recovery" "X-HackNow-Forensics" "" "Bo'lim tiklash"
+make_entry hexedit "Hexedit" "Hex editor" "X-HackNow-Forensics" "" "Hex muharriri"
+
+# ═══════════════════════════════════════
+# REVERSE ENGINEERING
+# ═══════════════════════════════════════
+make_entry gdb "GDB" "GNU Debugger" "X-HackNow-Reverse" "utilities-terminal" "GNU tuzatuvchi"
+make_entry gdb-multiarch "GDB Multiarch" "Multi-architecture debugger" "X-HackNow-Reverse" "" "Ko'p arxitektura tuzatuvchi"
+make_entry strace "Strace" "System call tracer" "X-HackNow-Reverse" "" "Tizim chaqiruvlari kuzatuvchi"
+make_entry ltrace "Ltrace" "Library call tracer" "X-HackNow-Reverse" "" "Kutubxona chaqiruvlari kuzatuvchi"
+make_entry checksec "Checksec" "Binary security check" "X-HackNow-Reverse" "" "Binary xavfsizlik tekshiruvi"
+make_entry valgrind "Valgrind" "Memory debugger" "X-HackNow-Reverse" "" "Xotira tuzatuvchi"
+
+# ═══════════════════════════════════════
+# CRYPTOGRAPHY
+# ═══════════════════════════════════════
+make_entry openssl "OpenSSL" "Crypto toolkit" "X-HackNow-Crypto" "dialog-password" "Kriptografiya to'plami"
+
+# ═══════════════════════════════════════
+# OSINT
+# ═══════════════════════════════════════
+make_entry recon-ng "Recon-ng" "OSINT framework" "X-HackNow-OSINT" "internet-web-browser" "OSINT platformasi"
+make_entry exiftool "ExifTool" "Metadata extraction" "X-HackNow-OSINT" "" "Metadata ajratish"
+
+# ═══════════════════════════════════════
+# CTF TOOLS
+# ═══════════════════════════════════════
+make_entry python3 "Python3" "Python interpreter" "X-HackNow-CTF" "" "Python interpretatori"
+make_entry ipython3 "IPython" "Interactive Python" "X-HackNow-CTF" "" "Interaktiv Python"
+make_entry qrencode "QR Encode" "QR code generator" "X-HackNow-CTF" "" "QR kod generatori"
+make_entry zbarimg "ZBar" "QR/barcode reader" "X-HackNow-CTF" "" "QR/shtrix-kod o'quvchi"
+make_entry docker "Docker" "Container runtime" "X-HackNow-CTF" "" "Konteyner muhiti"
+
+# ═══════════════════════════════════════
+# POST-EXPLOITATION
+# ═══════════════════════════════════════
+make_entry smbclient "SMBClient" "SMB file access" "X-HackNow-PrivEsc" "" "SMB fayl kirish"
+make_entry smbmap "SMBMap" "SMB enumeration" "X-HackNow-PrivEsc" "" "SMB sanab chiqish"
+
+# ═══════════════════════════════════════
+# GUI TOOL'LARGA KATEGORIYA QO'SHISH
+# ═══════════════════════════════════════
+add_cat() {
+    local file="$1" cat="$2"
+    [ -f "$APPS/$file" ] || return 0
+    if ! grep -q "$cat" "$APPS/$file" 2>/dev/null; then
+        sed -i "s|^Categories=\(.*\)|Categories=\1;$cat|" "$APPS/$file" 2>/dev/null || true
+    fi
+}
+
+add_cat "wireshark.desktop" "X-HackNow-Recon"
+add_cat "org.wireshark.Wireshark.desktop" "X-HackNow-Recon"
+add_cat "ettercap.desktop" "X-HackNow-Network"
+add_cat "org.keepassxc.KeePassXC.desktop" "X-HackNow-Passwords"
+add_cat "gimp.desktop" "X-HackNow-CTF"
+add_cat "audacity.desktop" "X-HackNow-CTF"
+
+echo "[HackNow OS] $COUNT ta tool menu'ga qo'shildi"

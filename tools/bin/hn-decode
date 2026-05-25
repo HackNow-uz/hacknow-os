@@ -1,0 +1,59 @@
+#!/bin/bash
+# hn-decode — Universal decoder (base64, hex, url, rot13)
+# Foydalanish: hn-decode "encoded_string"
+
+if [ -z "$1" ]; then
+    echo "Foydalanish: hn-decode <encoded_string>"
+    echo ""
+    echo "Misol:"
+    echo "  hn-decode SGVsbG8="
+    exit 1
+fi
+
+INPUT="$1"
+
+echo "═══════════════════════════════════════════"
+echo "  Input: $INPUT"
+echo "═══════════════════════════════════════════"
+
+# Base64
+echo ""
+echo "▶ Base64:"
+echo -n "$INPUT" | base64 -d 2>/dev/null || echo "  (not base64)"
+
+# Hex
+echo ""
+echo "▶ Hex:"
+echo -n "$INPUT" | xxd -r -p 2>/dev/null && echo "" || echo "  (not hex)"
+
+# URL decoded
+echo ""
+echo "▶ URL:"
+echo -n "$INPUT" | python3 -c "import sys,urllib.parse; print(urllib.parse.unquote(sys.stdin.read()))" 2>/dev/null
+
+# ROT13
+echo ""
+echo "▶ ROT13:"
+echo "$INPUT" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+
+# ROT47
+echo ""
+echo "▶ ROT47:"
+echo "$INPUT" | tr '\!-~' 'P-~\!-O'
+
+# Reversed
+echo ""
+echo "▶ Reversed:"
+echo "$INPUT" | rev
+
+# Binary
+echo ""
+echo "▶ Binary → ASCII (faqat 0/1 lar bo'lsa):"
+if [[ "$INPUT" =~ ^[01\ ]+$ ]]; then
+    echo "$INPUT" | tr -d ' ' | python3 -c "import sys; b=sys.stdin.read().strip(); print(''.join(chr(int(b[i:i+8],2)) for i in range(0,len(b),8)))" 2>/dev/null
+else
+    echo "  (binary emas)"
+fi
+
+echo ""
+echo "═══════════════════════════════════════════"

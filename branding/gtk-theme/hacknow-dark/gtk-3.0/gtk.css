@@ -1,0 +1,88 @@
+/* HackNow OS Dark Theme — GTK3 Overrides */
+/* Based on HackNow Platform design system */
+
+@define-color theme_bg_color #0a0a0a;
+@define-color theme_fg_color #f0f0f0;
+@define-color theme_base_color #0f0f10;
+@define-color theme_text_color #f0f0f0;
+@define-color theme_selected_bg_color #FF1744;
+@define-color theme_selected_fg_color #FFFFFF;
+@define-color borders rgba(255, 255, 255, 0.08);
+@define-color insensitive_fg_color #5a6a84;
+@define-color insensitive_bg_color #0a0a0a;
+@define-color theme_unfocused_bg_color #0a0a0a;
+@define-color theme_unfocused_fg_color #a4b1cd;
+@define-color success_color #00FF41;
+@define-color warning_color #F59E0B;
+@define-color error_color #ff3b3b;
+@define-color accent_color #FF1744;
+
+/* Import base Adwaita dark */
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
+
+/* Override accent elements */
+*:selected {
+    background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+button.suggested-action {
+    background-color: #FF1744;
+    color: #FFFFFF;
+}
+
+button.suggested-action:hover {
+    background-color: #ff2d55;
+}
+
+switch:checked slider {
+    background-color: #FF1744;
+}
+
+progressbar trough progress {
+    background-color: #FF1744;
+}
+
+scale highlight {
+    background-color: #FF1744;
+}
+
+/* Terminal-like elements */
+.terminal, vte-terminal {
+    background-color: #0a0a0a;
+    color: #00FF41;
+}
+
+/* Headerbar */
+headerbar {
+    background-color: #111827;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f0f0f0;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #0a0a0a;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Scrollbar — matches platform scrollbar */
+scrollbar slider {
+    background-color: #1a2332;
+    border-radius: 4px;
+    min-width: 6px;
+    min-height: 6px;
+}
+
+scrollbar slider:hover {
+    background-color: #5a6a84;
+}
+
+/* Links */
+*:link, button.link {
+    color: #FF1744;
+}
+
+*:link:hover, button.link:hover {
+    color: #ff2d55;
+}

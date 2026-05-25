@@ -1,0 +1,41 @@
+#!/bin/bash
+# hn-screenshot — Pentest screenshot helper
+# Automatically saves to ~/Pentest/Screenshots/ with timestamp + target
+
+DIR="$HOME/Pentest/Screenshots"
+mkdir -p "$DIR"
+
+TS=$(date +%Y-%m-%d_%H-%M-%S)
+TARGET="${TARGET:-screenshot}"
+SAFE_TARGET=$(echo "$TARGET" | tr -dc 'a-zA-Z0-9._-')
+FILE="$DIR/${TS}_${SAFE_TARGET}.png"
+
+case "${1:-area}" in
+    full|f)
+        xfce4-screenshooter -f -s "$FILE" 2>/dev/null
+        ;;
+    area|a|"")
+        xfce4-screenshooter -r -s "$FILE" 2>/dev/null
+        ;;
+    window|w)
+        xfce4-screenshooter -w -s "$FILE" 2>/dev/null
+        ;;
+    *)
+        echo "Foydalanish: hn-screenshot [full|area|window]"
+        echo ""
+        echo "Screenshot avtomatik saqlanadi:"
+        echo "  $DIR/<timestamp>_<target>.png"
+        echo ""
+        echo "Target nomini saqlash uchun:"
+        echo "  export TARGET=example.com"
+        echo "  hn-screenshot"
+        exit 0
+        ;;
+esac
+
+if [ -f "$FILE" ]; then
+    echo "✓ Saqlandi: $FILE"
+    # Notification
+    command -v notify-send >/dev/null && \
+        notify-send "Screenshot" "Saqlandi: $(basename "$FILE")" 2>/dev/null
+fi

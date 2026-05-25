@@ -1,0 +1,15 @@
+# === Raqamli Forensika ===
+
+# --- Debian repos ---
+sleuthkit
+autopsy
+foremost
+scalpel
+dc3dd
+testdisk
+photorec
+volatility3
+exiftool
+steghide
+binwalk
+bulk-extractor

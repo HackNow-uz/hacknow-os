@@ -1,0 +1,11 @@
+#!/bin/sh
+# HackNow OS — URL ochish (Calamares root session uchun)
+# Root'dan chaqirilganda hacknow user sifatida browser ochadi
+URL="$1"
+[ -z "$URL" ] && exit 1
+
+if [ "$(id -u)" = "0" ]; then
+    su - hacknow -c "DISPLAY=:0 xdg-open '$URL'" &
+else
+    xdg-open "$URL" &
+fi

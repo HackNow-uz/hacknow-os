@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Dunst Notifications
+Exec=sh -c "killall xfce4-notifyd 2>/dev/null; sleep 1; exec dunst"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true

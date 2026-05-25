@@ -1,0 +1,14 @@
+#!/bin/bash
+# HackNow OS — Tool runner wrapper
+# CLI tool'larni brendlangan terminal ichida ochadi
+TOOL="$1"
+shift
+clear
+echo -e "\033[1;31m╔══════════════════════════════════════╗"
+printf "\033[1;31m║  HackNow OS — %-21s ║\n" "$TOOL"
+echo -e "\033[1;31m╚══════════════════════════════════════╝\033[0m"
+echo ""
+"$TOOL" --help 2>&1 | head -30
+echo ""
+echo -e "\033[0;33m─── Tayyor. Buyruqni yozing: ───\033[0m"
+exec bash

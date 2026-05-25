@@ -1,0 +1,96 @@
+# HackNow OS — Starship Prompt Configuration
+# Cyberpunk red theme
+
+format = """
+[┌─\\[](bold red)$os$username$hostname[\\]](bold red) \
+$directory\
+$git_branch\
+$git_state\
+$git_status\
+$cmd_duration\
+$line_break\
+[└─╼](bold red) $character"""
+
+right_format = """$time"""
+
+add_newline = false
+
+[character]
+success_symbol = "[›](bold red)"
+error_symbol = "[›](bold #ff3b3b)"
+vimcmd_symbol = "[‹](bold #00FF41)"
+
+[os]
+disabled = false
+format = "[$symbol](bold red) "
+
+[os.symbols]
+Debian = "🅷"
+Ubuntu = ""
+Arch = ""
+Linux = ""
+
+[username]
+show_always = true
+style_user = "bold white"
+style_root = "bold #FF1744"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+format = "@[$hostname](bold #00FF41) "
+disabled = false
+
+[directory]
+style = "bold #00d4ff"
+truncation_length = 3
+truncate_to_repo = false
+format = "[ $path]($style)[$read_only]($read_only_style) "
+read_only = " "
+read_only_style = "bold #FF1744"
+
+[git_branch]
+symbol = " "
+style = "bold #F59E0B"
+format = "[on](white) [$symbol$branch]($style) "
+
+[git_status]
+style = "bold #FF1744"
+format = '([\[$all_status$ahead_behind\]]($style) )'
+
+[cmd_duration]
+min_time = 1_000
+format = "took [$duration](bold yellow) "
+
+[time]
+disabled = false
+time_format = "%H:%M"
+format = "[ $time](#5a6a84)"
+utc_time_offset = "+5"
+
+[memory_usage]
+disabled = false
+threshold = 70
+symbol = " "
+style = "bold dimmed white"
+format = "via $symbol[${ram}( | ${swap})]($style) "
+
+[battery]
+disabled = true
+
+[python]
+symbol = " "
+style = "bold #00d4ff"
+format = '[$symbol$pyenv_prefix($version )(\($virtualenv\) )]($style)'
+
+[nodejs]
+symbol = " "
+style = "bold #00FF41"
+
+[rust]
+symbol = " "
+style = "bold #F59E0B"
+
+[golang]
+symbol = " "
+style = "bold #00d4ff"

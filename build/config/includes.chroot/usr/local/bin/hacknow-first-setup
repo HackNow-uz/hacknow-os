@@ -1,0 +1,232 @@
+#!/bin/bash
+# HackNow OS — Birinchi login sozlamalar
+# XFCE session ichida ishlaydi, bir marta
+
+FLAG="$HOME/.config/hacknow-setup-done"
+if [ -f "$FLAG" ]; then
+    exit 0
+fi
+
+sleep 3  # XFCE to'liq yuklanishini kutish
+
+# ============================================
+# 1. PANEL — 2 panel: top bar + bottom dock
+# ============================================
+xfce4-panel --quit 2>/dev/null
+sleep 1
+
+# Eski panel config tozalash
+xfconf-query -c xfce4-panel -r -R / 2>/dev/null
+rm -rf "$HOME/.config/xfce4/panel" 2>/dev/null
+
+# 2 ta panel yaratish
+xfconf-query -c xfce4-panel -p /configver -n -t int -s 2
+xfconf-query -c xfce4-panel -p /panels -n -a -t int -s 1 -t int -s 2
+
+# --- PANEL 1: Top bar (28px, kompakt) ---
+xfconf-query -c xfce4-panel -p /panels/panel-1/position -n -t string -s "p=6;x=0;y=0"
+xfconf-query -c xfce4-panel -p /panels/panel-1/length -n -t uint -s 100
+xfconf-query -c xfce4-panel -p /panels/panel-1/position-locked -n -t bool -s true
+xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t uint -s 28
+xfconf-query -c xfce4-panel -p /panels/panel-1/icon-size -n -t uint -s 16
+xfconf-query -c xfce4-panel -p /panels/panel-1/background-style -n -t uint -s 1
+xfconf-query -c xfce4-panel -p /panels/panel-1/background-rgba -n -a \
+    -t double -s 0.039 -t double -s 0.039 -t double -s 0.039 -t double -s 0.96
+
+# Top panel plugins: Menu | Sep | Tasklist | Sep(expand) | Systray | Notif | XKB | PulseAudio | Clock | Actions
+xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -n -a \
+    -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 \
+    -t int -s 5 -t int -s 6 -t int -s 15 -t int -s 14 -t int -s 7 -t int -s 8
+
+# Plugin-1: Applications Menu (Parrot OS uslubida cascading menu)
+xfconf-query -c xfce4-panel -p /plugins/plugin-1 -n -t string -s "applicationsmenu"
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -t string -s "/usr/share/pixmaps/hacknow-logo.png"
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-title -n -t string -s ""
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title -n -t bool -s false
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-icon -n -t bool -s true
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/small -n -t bool -s false
+
+# Plugin-2: Separator
+xfconf-query -c xfce4-panel -p /plugins/plugin-2 -n -t string -s "separator"
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/expand -n -t bool -s false
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/style -n -t uint -s 3
+
+# Plugin-3: Tasklist
+xfconf-query -c xfce4-panel -p /plugins/plugin-3 -n -t string -s "tasklist"
+xfconf-query -c xfce4-panel -p /plugins/plugin-3/flat-buttons -n -t bool -s true
+xfconf-query -c xfce4-panel -p /plugins/plugin-3/show-labels -n -t bool -s true
+xfconf-query -c xfce4-panel -p /plugins/plugin-3/grouping -n -t uint -s 1
+
+# Plugin-4: Expanding separator
+xfconf-query -c xfce4-panel -p /plugins/plugin-4 -n -t string -s "separator"
+xfconf-query -c xfce4-panel -p /plugins/plugin-4/expand -n -t bool -s true
+xfconf-query -c xfce4-panel -p /plugins/plugin-4/style -n -t uint -s 0
+
+# Plugin-5: Systray
+xfconf-query -c xfce4-panel -p /plugins/plugin-5 -n -t string -s "systray"
+xfconf-query -c xfce4-panel -p /plugins/plugin-5/square-icons -n -t bool -s true
+xfconf-query -c xfce4-panel -p /plugins/plugin-5/size-max -n -t uint -s 18
+xfconf-query -c xfce4-panel -p /plugins/plugin-5/symbolic-icons -n -t bool -s true
+
+# Plugin-6: Notification
+xfconf-query -c xfce4-panel -p /plugins/plugin-6 -n -t string -s "notification-plugin"
+
+# Plugin-15: Keyboard Layout (uz/ru)
+xfconf-query -c xfce4-panel -p /plugins/plugin-15 -n -t string -s "xkb"
+xfconf-query -c xfce4-panel -p /plugins/plugin-15/display-type -n -t uint -s 2
+xfconf-query -c xfce4-panel -p /plugins/plugin-15/display-name -n -t uint -s 1
+xfconf-query -c xfce4-panel -p /plugins/plugin-15/group-policy -n -t uint -s 0
+
+# Plugin-14: PulseAudio
+xfconf-query -c xfce4-panel -p /plugins/plugin-14 -n -t string -s "pulseaudio"
+xfconf-query -c xfce4-panel -p /plugins/plugin-14/enable-keyboard-shortcuts -n -t bool -s true
+
+# Plugin-7: Clock
+xfconf-query -c xfce4-panel -p /plugins/plugin-7 -n -t string -s "clock"
+xfconf-query -c xfce4-panel -p /plugins/plugin-7/digital-format -n -t string -s "%H:%M  %a %d %b"
+xfconf-query -c xfce4-panel -p /plugins/plugin-7/digital-time-format -n -t string -s "%H:%M  %a %d %b"
+xfconf-query -c xfce4-panel -p /plugins/plugin-7/mode -n -t uint -s 2
+xfconf-query -c xfce4-panel -p /plugins/plugin-7/show-frame -n -t bool -s false
+
+# Plugin-8: Actions
+xfconf-query -c xfce4-panel -p /plugins/plugin-8 -n -t string -s "actions"
+
+# --- PANEL 2: Bottom dock (48px, auto-hide, centered) ---
+xfconf-query -c xfce4-panel -p /panels/panel-2/position -n -t string -s "p=10;x=0;y=0"
+xfconf-query -c xfce4-panel -p /panels/panel-2/length -n -t uint -s 1
+xfconf-query -c xfce4-panel -p /panels/panel-2/length-adjust -n -t bool -s true
+xfconf-query -c xfce4-panel -p /panels/panel-2/position-locked -n -t bool -s true
+xfconf-query -c xfce4-panel -p /panels/panel-2/size -n -t uint -s 48
+xfconf-query -c xfce4-panel -p /panels/panel-2/icon-size -n -t uint -s 36
+xfconf-query -c xfce4-panel -p /panels/panel-2/background-style -n -t uint -s 1
+xfconf-query -c xfce4-panel -p /panels/panel-2/background-rgba -n -a \
+    -t double -s 0.039 -t double -s 0.039 -t double -s 0.039 -t double -s 0.75
+xfconf-query -c xfce4-panel -p /panels/panel-2/autohide-behavior -n -t uint -s 1
+xfconf-query -c xfce4-panel -p /panels/panel-2/leave-opacity -n -t uint -s 60
+xfconf-query -c xfce4-panel -p /panels/panel-2/enter-opacity -n -t uint -s 100
+
+# Bottom dock plugins: Terminal | Firefox | Thunar | Editor | Sep | Installer | ShowDesktop
+xfconf-query -c xfce4-panel -p /panels/panel-2/plugin-ids -n -a \
+    -t int -s 20 -t int -s 21 -t int -s 22 -t int -s 23 \
+    -t int -s 24 -t int -s 25 -t int -s 26
+
+xfconf-query -c xfce4-panel -p /plugins/plugin-20 -n -t string -s "launcher"
+xfconf-query -c xfce4-panel -p /plugins/plugin-21 -n -t string -s "launcher"
+xfconf-query -c xfce4-panel -p /plugins/plugin-22 -n -t string -s "launcher"
+xfconf-query -c xfce4-panel -p /plugins/plugin-23 -n -t string -s "launcher"
+xfconf-query -c xfce4-panel -p /plugins/plugin-24 -n -t string -s "separator"
+xfconf-query -c xfce4-panel -p /plugins/plugin-24/style -n -t uint -s 1
+xfconf-query -c xfce4-panel -p /plugins/plugin-25 -n -t string -s "launcher"
+xfconf-query -c xfce4-panel -p /plugins/plugin-26 -n -t string -s "showdesktop"
+
+# Launcher .desktop fayllar
+mkdir -p "$HOME/.config/xfce4/panel/launcher-"{20,21,22,23,25}
+ln -sf /usr/share/applications/xfce4-terminal.desktop "$HOME/.config/xfce4/panel/launcher-20/"
+ln -sf /usr/share/applications/firefox-esr.desktop "$HOME/.config/xfce4/panel/launcher-21/"
+ln -sf /usr/share/applications/thunar.desktop "$HOME/.config/xfce4/panel/launcher-22/"
+ln -sf /usr/share/applications/mousepad.desktop "$HOME/.config/xfce4/panel/launcher-23/"
+ln -sf /usr/share/applications/install-hacknow.desktop "$HOME/.config/xfce4/panel/launcher-25/" 2>/dev/null
+
+# Panel restart
+xfce4-panel &
+
+# ============================================
+# 2. DESKTOP — wallpaper, no icons (faqat conky)
+# ============================================
+for mon in monitorVirtual-1 monitorVirtual1 monitor0 monitor1 monitorscreen; do
+    xfconf-query -c xfce4-desktop -p /backdrop/screen0/$mon/workspace0/last-image \
+        -n -t string -s /usr/share/backgrounds/hacknow/wallpaper-2.png 2>/dev/null
+    xfconf-query -c xfce4-desktop -p /backdrop/screen0/$mon/workspace0/image-style \
+        -n -t int -s 5 2>/dev/null
+done
+
+xfconf-query -c xfce4-desktop -p /desktop-icons/style -n -t int -s 0
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-removable -n -t bool -s false
+
+# ============================================
+# 3. WINDOW MANAGER
+# ============================================
+xfconf-query -c xfwm4 -p /general/theme -n -t string -s "HackNow-Dark"
+xfconf-query -c xfwm4 -p /general/button_layout -n -t string -s "O|HMC"
+xfconf-query -c xfwm4 -p /general/title_font -n -t string -s "Noto Sans Bold 9"
+xfconf-query -c xfwm4 -p /general/use_compositing -n -t bool -s false
+xfconf-query -c xfwm4 -p /general/workspace_count -n -t int -s 4
+xfconf-query -c xfwm4 -p /general/tile_on_move -n -t bool -s true
+xfconf-query -c xfwm4 -p /general/snap_to_border -n -t bool -s true
+xfconf-query -c xfwm4 -p /general/snap_to_windows -n -t bool -s true
+
+# ============================================
+# 4. GTK THEME + ICONS
+# ============================================
+xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "HackNow-Dark"
+xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "Papirus-Dark"
+if [ -d /usr/share/icons/Bibata-Modern-Classic ]; then
+    xfconf-query -c xsettings -p /Net/CursorThemeName -s "Bibata-Modern-Classic" 2>/dev/null || \
+    xfconf-query -c xsettings -p /Net/CursorThemeName -n -t string -s "Bibata-Modern-Classic"
+    xfconf-query -c xsettings -p /Net/CursorThemeSize -s 24 2>/dev/null || \
+    xfconf-query -c xsettings -p /Net/CursorThemeSize -n -t int -s 24
+else
+    xfconf-query -c xsettings -p /Net/CursorThemeName -n -t string -s "Adwaita"
+fi
+xfconf-query -c xsettings -p /Gtk/FontName -n -t string -s "Noto Sans 10"
+xfconf-query -c xsettings -p /Gtk/MonospaceFontName -n -t string -s "Hack 10"
+xfconf-query -c xsettings -p /Xft/Antialias -n -t int -s 1
+xfconf-query -c xsettings -p /Xft/HintStyle -n -t string -s "hintfull"
+
+# ============================================
+# 5. KEYBOARD SHORTCUTS
+# ============================================
+xfconf-query -c xfce4-keyboard-shortcuts -p /commands/custom/Super_L -n -t string -s "rofi -show drun" 2>/dev/null
+xfconf-query -c xfce4-keyboard-shortcuts -p /commands/custom/'<Super>d' -n -t string -s "rofi -show drun" 2>/dev/null
+xfconf-query -c xfce4-keyboard-shortcuts -p /commands/custom/'<Super>Return' -n -t string -s "xfce4-terminal" 2>/dev/null
+xfconf-query -c xfce4-keyboard-shortcuts -p /commands/custom/'<Super>e' -n -t string -s "thunar" 2>/dev/null
+xfconf-query -c xfce4-keyboard-shortcuts -p /commands/custom/'<Super>b' -n -t string -s "firefox-esr" 2>/dev/null
+xfconf-query -c xfce4-keyboard-shortcuts -p /commands/custom/'<Super>l' -n -t string -s "xflock4" 2>/dev/null
+
+# ============================================
+# 6. NEOFETCH
+# ============================================
+mkdir -p "$HOME/.config/neofetch"
+cat > "$HOME/.config/neofetch/config.conf" << 'NEOF'
+print_info() {
+    info title
+    info underline
+    info "OS" distro
+    info "Kernel" kernel
+    info "Uptime" uptime
+    info "Packages" packages
+    info "Shell" shell
+    info "DE" de
+    info "WM" wm
+    info "Terminal" term
+    info "CPU" cpu
+    info "GPU" gpu
+    info "Memory" memory
+    info "Disk" disk
+    info "Local IP" local_ip
+    info cols
+}
+image_backend="ascii"
+image_source="/etc/neofetch/hacknow.ascii"
+ascii_distro="off"
+ascii_colors=(1 1 1 1 1 7)
+colors=(1 7 7 1 1 7)
+bold="on"
+underline="on"
+separator=" -> "
+color_blocks="on"
+NEOF
+cp /etc/neofetch/hacknow.ascii "$HOME/.config/neofetch/hacknow.ascii" 2>/dev/null
+
+# ============================================
+# FLAG — qayta ishlatmaslik uchun
+# ============================================
+mkdir -p "$(dirname "$FLAG")"
+touch "$FLAG"
+
+xfdesktop --reload 2>/dev/null &
+
+echo "[HackNow OS] First-setup tugadi!"

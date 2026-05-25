@@ -1,0 +1,8 @@
+#!/bin/sh
+# HackNow OS - live-build tozalash skripti
+# Ishlatish: lb clean
+
+set -e
+
+lb clean noauto "${@}"
+rm -f build.log

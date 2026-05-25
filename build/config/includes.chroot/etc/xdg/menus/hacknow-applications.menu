@@ -1,0 +1,124 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+  "http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
+<Menu>
+  <Name>Applications</Name>
+  <MergeFile type="parent">/etc/xdg/menus/xfce-applications.menu</MergeFile>
+
+  <!-- Kali uslubi: bitta "HackNow" parent, ichida subkategoriyalar -->
+  <Menu>
+    <Name>HackNow</Name>
+    <Directory>hacknow-tools.directory</Directory>
+
+    <Menu>
+      <Name>01 - Information Gathering</Name>
+      <Directory>hacknow-recon.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Recon</Category>
+        <Filename>nmap.desktop</Filename>
+        <Filename>masscan.desktop</Filename>
+        <Filename>zenmap.desktop</Filename>
+        <Filename>netdiscover.desktop</Filename>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>02 - Vulnerability Analysis</Name>
+      <Directory>hacknow-web.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Web</Category>
+        <Filename>sqlmap.desktop</Filename>
+        <Filename>nikto.desktop</Filename>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>03 - Exploitation Tools</Name>
+      <Directory>hacknow-exploit.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Exploit</Category>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>04 - Password Attacks</Name>
+      <Directory>hacknow-passwords.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Passwords</Category>
+        <Filename>john.desktop</Filename>
+        <Filename>hashcat.desktop</Filename>
+        <Filename>hydra.desktop</Filename>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>05 - Network Attacks</Name>
+      <Directory>hacknow-network.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Network</Category>
+        <Filename>ettercap.desktop</Filename>
+        <Filename>wireshark.desktop</Filename>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>06 - Wireless Attacks</Name>
+      <Directory>hacknow-wireless.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Wireless</Category>
+        <Filename>aircrack-ng.desktop</Filename>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>07 - Forensics</Name>
+      <Directory>hacknow-forensics.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Forensics</Category>
+        <Filename>autopsy.desktop</Filename>
+        <Filename>sleuthkit.desktop</Filename>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>08 - Reverse Engineering</Name>
+      <Directory>hacknow-reverse.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Reverse</Category>
+        <Filename>gdb.desktop</Filename>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>09 - Cryptography</Name>
+      <Directory>hacknow-crypto.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-Crypto</Category>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>10 - OSINT</Name>
+      <Directory>hacknow-osint.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-OSINT</Category>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>11 - CTF Tools</Name>
+      <Directory>hacknow-ctf.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-CTF</Category>
+      </Or></Include>
+    </Menu>
+
+    <Menu>
+      <Name>12 - Post Exploitation</Name>
+      <Directory>hacknow-privesc.directory</Directory>
+      <Include><Or>
+        <Category>X-HackNow-PrivEsc</Category>
+      </Or></Include>
+    </Menu>
+
+  </Menu>
+</Menu>

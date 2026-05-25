@@ -1,0 +1,37 @@
+# Calamares — universal Linux installer framework
+calamares
+calamares-settings-debian
+
+# Qt5 va QML modullari — branding/show.qml uchun
+qtbase5-dev
+qttools5-dev-tools
+qml-module-qtquick2
+qml-module-qtquick-controls
+qml-module-qtquick-controls2
+qml-module-qtquick-layouts
+qml-module-qtquick-window2
+qml-module-qtgraphicaleffects
+
+# Bootloader install uchun (calamares bootloader modulida ishlatiladi)
+grub2-common
+grub-pc-bin
+grub-efi-amd64-bin
+grub-efi-amd64-signed
+efibootmgr
+shim-signed
+os-prober
+
+# Filesystem va partition asboblari
+dosfstools
+e2fsprogs
+ntfs-3g
+exfatprogs
+btrfs-progs
+xfsprogs
+gdisk
+parted
+gparted
+
+# Polkit (sudo so'ramasdan installer ishga tushishi uchun)
+polkitd
+pkexec

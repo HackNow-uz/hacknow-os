@@ -1,0 +1,54 @@
+#!/bin/sh
+# Binary hook: kernel symlink + GRUB theme'ni ISO'ga joylashtirish
+# Bu hook lb build jarayonida binary bosqichda ishlaydi
+
+set -e
+
+# === 1. Kernel symlink ===
+# Binary hook'lar turli working directory'larda ishlashi mumkin
+if [ -d binary/live ]; then
+    LIVEDIR="binary/live"
+elif [ -d live ]; then
+    LIVEDIR="live"
+else
+    echo "W: binary/live papkasi topilmadi, kernel symlink o'tkazildi"
+    LIVEDIR=""
+fi
+
+if [ -n "$LIVEDIR" ]; then
+    cd "$LIVEDIR"
+
+    KERNEL=$(ls vmlinuz-* 2>/dev/null | head -1)
+    if [ -n "$KERNEL" ] && [ ! -e vmlinuz ]; then
+        ln -s "$KERNEL" vmlinuz
+        echo "P: Created symlink vmlinuz -> $KERNEL"
+    fi
+
+    INITRD=$(ls initrd.img-* 2>/dev/null | head -1)
+    if [ -n "$INITRD" ] && [ ! -e initrd.img ]; then
+        ln -s "$INITRD" initrd.img
+        echo "P: Created symlink initrd.img -> $INITRD"
+    fi
+
+    cd - >/dev/null
+fi
+
+# === 2. GRUB theme tekshiruvi ===
+# Tema includes.binary/boot/grub/themes/hacknow/ orqali avtomatik joylashadi.
+# Bu qism faqat tekshiruv — agar tema topilmasa ogohlantiradi.
+
+THEME_DST="binary/boot/grub/themes/hacknow"
+
+if [ -f "$THEME_DST/theme.txt" ]; then
+    echo "P: GRUB theme found at $THEME_DST"
+else
+    # Fallback: chroot'dan nusxalashga urinish
+    THEME_SRC="chroot/usr/share/grub/themes/hacknow"
+    if [ -d "$THEME_SRC" ]; then
+        mkdir -p "$THEME_DST"
+        cp -a "$THEME_SRC"/* "$THEME_DST"/
+        echo "P: Copied GRUB theme from chroot fallback"
+    else
+        echo "W: GRUB theme not found — default GRUB menu ko'rinadi"
+    fi
+fi

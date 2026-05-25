@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfce4-panel" version="1.0">
+  <property name="configver" type="int" value="2"/>
+  <property name="panels" type="array">
+    <value type="int" value="1"/>
+    <value type="int" value="2"/>
+  </property>
+
+  <!-- PANEL 1 — Top bar -->
+  <property name="panel-1" type="empty">
+    <property name="position" type="string" value="p=6;x=0;y=0"/>
+    <property name="length" type="uint" value="100"/>
+    <property name="position-locked" type="bool" value="true"/>
+    <property name="icon-size" type="uint" value="16"/>
+    <property name="size" type="uint" value="28"/>
+    <property name="background-style" type="uint" value="1"/>
+    <property name="background-rgba" type="array">
+      <value type="double" value="0.039"/>
+      <value type="double" value="0.039"/>
+      <value type="double" value="0.039"/>
+      <value type="double" value="0.96"/>
+    </property>
+    <property name="plugin-ids" type="array">
+      <value type="int" value="1"/>
+      <value type="int" value="2"/>
+      <value type="int" value="3"/>
+      <value type="int" value="4"/>
+      <value type="int" value="5"/>
+      <value type="int" value="6"/>
+      <value type="int" value="15"/>
+      <value type="int" value="14"/>
+      <value type="int" value="7"/>
+      <value type="int" value="8"/>
+    </property>
+  </property>
+
+  <!-- PANEL 2 — Bottom dock -->
+  <property name="panel-2" type="empty">
+    <property name="position" type="string" value="p=10;x=0;y=0"/>
+    <property name="length" type="uint" value="1"/>
+    <property name="length-adjust" type="bool" value="true"/>
+    <property name="position-locked" type="bool" value="true"/>
+    <property name="icon-size" type="uint" value="36"/>
+    <property name="size" type="uint" value="48"/>
+    <property name="background-style" type="uint" value="1"/>
+    <property name="background-rgba" type="array">
+      <value type="double" value="0.039"/>
+      <value type="double" value="0.039"/>
+      <value type="double" value="0.039"/>
+      <value type="double" value="0.75"/>
+    </property>
+    <property name="autohide-behavior" type="uint" value="1"/>
+    <property name="leave-opacity" type="uint" value="60"/>
+    <property name="enter-opacity" type="uint" value="100"/>
+    <property name="plugin-ids" type="array">
+      <value type="int" value="20"/>
+      <value type="int" value="21"/>
+      <value type="int" value="22"/>
+      <value type="int" value="23"/>
+      <value type="int" value="24"/>
+      <value type="int" value="25"/>
+      <value type="int" value="26"/>
+    </property>
+  </property>
+
+  <property name="plugins" type="empty">
+
+    <!-- 1: Applications Menu -->
+    <property name="plugin-1" type="string" value="applicationsmenu">
+      <property name="button-icon" type="string" value="/usr/share/pixmaps/hacknow-logo.png"/>
+      <property name="button-title" type="string" value=""/>
+      <property name="show-button-title" type="bool" value="false"/>
+      <property name="show-button-icon" type="bool" value="true"/>
+      <property name="small" type="bool" value="false"/>
+      <property name="category-show-name" type="bool" value="true"/>
+      <property name="category-icon-size" type="int" value="1"/>
+      <property name="item-icon-size" type="int" value="2"/>
+      <property name="sort-categories" type="bool" value="true"/>
+      <property name="position-search-alternate" type="bool" value="true"/>
+      <property name="position-categories-alternate" type="bool" value="true"/>
+    </property>
+
+    <!-- 2: Separator -->
+    <property name="plugin-2" type="string" value="separator">
+      <property name="expand" type="bool" value="false"/>
+      <property name="style" type="uint" value="3"/>
+    </property>
+
+    <!-- 3: Tasklist -->
+    <property name="plugin-3" type="string" value="tasklist">
+      <property name="flat-buttons" type="bool" value="true"/>
+      <property name="show-labels" type="bool" value="true"/>
+      <property name="show-handle" type="bool" value="false"/>
+      <property name="grouping" type="uint" value="1"/>
+      <property name="show-tooltips" type="bool" value="true"/>
+      <property name="window-scrolling" type="bool" value="false"/>
+    </property>
+
+    <!-- 4: Expanding separator -->
+    <property name="plugin-4" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+
+    <!-- 5: Systray -->
+    <property name="plugin-5" type="string" value="systray">
+      <property name="square-icons" type="bool" value="true"/>
+      <property name="size-max" type="uint" value="18"/>
+      <property name="symbolic-icons" type="bool" value="true"/>
+    </property>
+
+    <!-- 6: Notification -->
+    <property name="plugin-6" type="string" value="notification-plugin"/>
+
+    <!-- 15: Keyboard Layout (uz/ru) -->
+    <property name="plugin-15" type="string" value="xkb">
+      <property name="display-type" type="uint" value="2"/>
+      <property name="display-name" type="uint" value="1"/>
+      <property name="group-policy" type="uint" value="0"/>
+    </property>
+
+    <!-- 14: PulseAudio -->
+    <property name="plugin-14" type="string" value="pulseaudio">
+      <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+      <property name="show-notifications" type="bool" value="true"/>
+    </property>
+
+    <!-- 7: Clock -->
+    <property name="plugin-7" type="string" value="clock">
+      <property name="digital-format" type="string" value="%H:%M  %a %d %b"/>
+      <property name="digital-time-format" type="string" value="%H:%M  %a %d %b"/>
+      <property name="tooltip-format" type="string" value="%A, %d %B %Y"/>
+      <property name="digital-layout" type="uint" value="3"/>
+      <property name="mode" type="uint" value="2"/>
+      <property name="show-frame" type="bool" value="false"/>
+    </property>
+
+    <!-- 8: Actions -->
+    <property name="plugin-8" type="string" value="actions">
+      <property name="appearance" type="uint" value="0"/>
+      <property name="items" type="array">
+        <value type="string" value="+lock-screen"/>
+        <value type="string" value="+separator"/>
+        <value type="string" value="+suspend"/>
+        <value type="string" value="+shutdown"/>
+        <value type="string" value="+restart"/>
+        <value type="string" value="+logout"/>
+      </property>
+    </property>
+
+    <!-- 20: Terminal -->
+    <property name="plugin-20" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="xfce4-terminal.desktop"/>
+      </property>
+    </property>
+
+    <!-- 21: Firefox -->
+    <property name="plugin-21" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="firefox-esr.desktop"/>
+      </property>
+    </property>
+
+    <!-- 22: Thunar -->
+    <property name="plugin-22" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="thunar.desktop"/>
+      </property>
+    </property>
+
+    <!-- 23: Editor -->
+    <property name="plugin-23" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="mousepad.desktop"/>
+      </property>
+    </property>
+
+    <!-- 24: Separator (dots) -->
+    <property name="plugin-24" type="string" value="separator">
+      <property name="expand" type="bool" value="false"/>
+      <property name="style" type="uint" value="1"/>
+    </property>
+
+    <!-- 25: Installer -->
+    <property name="plugin-25" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="install-hacknow.desktop"/>
+      </property>
+    </property>
+
+    <!-- 26: Show Desktop -->
+    <property name="plugin-26" type="string" value="showdesktop"/>
+
+  </property>
+</channel>
