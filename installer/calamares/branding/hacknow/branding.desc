@@ -1,6 +1,8 @@
 ---
 componentName: hacknow
 
+# === Brending stringlari ===
+# Bu yerdagi string'lar uz.ts orqali tarjima qilinadi.
 strings:
     productName:         "HackNow OS"
     shortProductName:    "HackNow"
@@ -15,18 +17,28 @@ strings:
     releaseNotesUrl:     "https://os.hacknow.uz/#releases"
     donateUrl:           ""
 
+# === Rasmlar ===
 images:
     productLogo:         "hacknow-sidebar-logo.png"
     productIcon:         "hacknow-icon.png"
     productWelcome:      "hacknow-welcome.png"
     productWallpaper:    "hacknow-wallpaper.png"
 
+# === Slideshow ===
 slideshow:               "show.qml"
 slideshowAPI: 2
 
+# === Stil — sidebar palitra ===
+# Sidebar'da qaysi rang qachon ishlatilishini boshqaradi (QML emas, oddiy QPalette).
 style:
-    sidebarBackground:   "#0a0a0a"
-    sidebarText:         "#a4b1cd"
-    sidebarTextSelect:   "#ffffff"
-    sidebarTextHighlight: "#1a0008"
-    sidebarTextCurrent:  "#FF1744"
+    sidebarBackground:    "#0a0a0a"
+    sidebarText:          "#a4b1cd"
+    sidebarBackgroundSelected: "#1a0008"
+    sidebarTextSelect:    "#ffffff"
+    sidebarTextHighlight: "#FF1744"
+    sidebarTextCurrent:   "#FF1744"
+
+# === Welcome page rasm fonini bloklash (toza) ===
+windowExpanding: normal
+windowSize: 900px,560px
+windowPlacement: center

@@ -85,14 +85,42 @@ if [ -f "$SRC_CAL/settings.conf" ]; then
 fi
 
 # === 4. i18n (agar mavjud bo'lsa) ===
+# Branding ichidagi uz.ts/uz.qm — Calamares branding strings tarjimasi.
+# Ular faqat "Welcome to ... installer." kabi brending stringlariga ta'sir qiladi.
+LRELEASE=""
+for cand in lrelease lrelease-qt5 lrelease6 lrelease-qt6; do
+    if command -v "$cand" >/dev/null 2>&1; then
+        LRELEASE="$cand"
+        break
+    fi
+done
+
 if [ -d "$INSTALLER_DIR/i18n" ]; then
     log "i18n tarjimalar sync qilinmoqda..."
     I18N_DST="$INCLUDES/usr/share/calamares/branding/hacknow"
-    for ts_file in "$INSTALLER_DIR/i18n/"*.ts "$INSTALLER_DIR/i18n/"*.qm; do
+    mkdir -p "$I18N_DST"
+    for ts_file in "$INSTALLER_DIR/i18n/"*.ts; do
         [ -f "$ts_file" ] || continue
         cp "$ts_file" "$I18N_DST/"
-        echo "  ✓ $(basename "$ts_file")"
+        base=$(basename "$ts_file" .ts)
+        if [ -n "$LRELEASE" ]; then
+            $LRELEASE "$ts_file" -qm "$I18N_DST/${base}.qm" >/dev/null 2>&1 && \
+                echo "  ✓ ${base}.ts → ${base}.qm (build-time)" || \
+                echo "  ~ ${base}.ts (lrelease xato, chroot'da qayta urinadi)"
+        else
+            echo "  ✓ ${base}.ts (lrelease yo'q — chroot hook kompilyatsiya qiladi)"
+        fi
     done
+fi
+
+# === 5. Pre-shipped calamares_uz.qm (asosiy 800+ string) ===
+# `calamares-settings-debian` paketi calamares_uz.ts ni /usr/share/calamares/lang/
+# ichiga olib keladi. Chroot hook lrelease bilan qm qiladi, lekin agar lrelease
+# topilmasa muvaffaqiyatsiz bo'ladi. Shu sababli, agar host'da lrelease bo'lsa,
+# build-time'da ham urinib ko'ramiz (bu fayl chroot bosqichigacha mavjud emas,
+# shu sababli ko'pincha skip bo'ladi — lekin warn chiqarish foydali).
+if [ -n "$LRELEASE" ]; then
+    log "Calamares core tarjimasi (calamares_uz.qm) chroot bosqichida kompilyatsiya qilinadi"
 fi
 
 # === Xulosa ===

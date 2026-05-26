@@ -281,13 +281,15 @@ if command -v calamares >/dev/null 2>&1; then
         done
     fi
 
-    # lrelease topish
+    # lrelease topish (Qt5 + Qt6 variantlari)
     LRELEASE=""
-    if command -v lrelease >/dev/null 2>&1; then
-        LRELEASE="lrelease"
-    elif command -v lrelease-qt5 >/dev/null 2>&1; then
-        LRELEASE="lrelease-qt5"
-    fi
+    for cand in lrelease lrelease-qt5 lrelease6 lrelease-qt6 /usr/lib/qt5/bin/lrelease /usr/lib/qt6/bin/lrelease; do
+        if command -v "$cand" >/dev/null 2>&1 || [ -x "$cand" ]; then
+            LRELEASE="$cand"
+            break
+        fi
+    done
+    [ -z "$LRELEASE" ] && echo "[HackNow OS] OGOHLANTIRISH: lrelease topilmadi — qttools5-dev-tools yoki qttools-dev kerak"
 
     # Calamares asosiy O'zbek tarjimasi (882 string — to'liq UI)
     CALA_LANG="/usr/share/calamares/lang"
@@ -310,6 +312,14 @@ if command -v calamares >/dev/null 2>&1; then
     # GTK panelida ham ko'rinishi uchun
     if [ -f /usr/share/applications/install-hacknow.desktop ]; then
         update-desktop-database /usr/share/applications/ 2>/dev/null || true
+    fi
+
+    # Installer wrapper executable
+    if [ -f /usr/local/bin/hacknow-installer ]; then
+        chmod +x /usr/local/bin/hacknow-installer
+        echo "[HackNow OS] hacknow-installer wrapper o'rnatildi (LANG=uz_UZ.UTF-8)"
+    else
+        echo "[HackNow OS] OGOHLANTIRISH: /usr/local/bin/hacknow-installer topilmadi"
     fi
 
     echo "[HackNow OS] Calamares installer integratsiyalandi"

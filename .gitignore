@@ -9,6 +9,9 @@
 *.deb
 build.log
 
+# --- Qt linguist kompilyatsiyalangan tarjimalar (uz.ts dan generatsiya) ---
+*.qm
+
 # --- live-build vaqtinchalik kataloglari ---
 build/.build/
 build/cache/

@@ -1,0 +1,40 @@
+#!/bin/sh
+# HackNow OS — Calamares installer launcher
+#
+# sudo env'ni tashlab ketadi, shuning uchun LANG/LANGUAGE/QT env'larni
+# o'zimiz qayta tiklab, Calamares'ni O'zbek tilida ishga tushiramiz.
+
+# === Til ===
+export LANG="${HACKNOW_INSTALLER_LANG:-uz_UZ.UTF-8}"
+export LANGUAGE="${HACKNOW_INSTALLER_LANGUAGE:-uz:en:ru}"
+export LC_MESSAGES="$LANG"
+export LC_TIME="$LANG"
+export LC_MONETARY="$LANG"
+export LC_NUMERIC="en_US.UTF-8"
+export LC_COLLATE="$LANG"
+
+# === Qt rendering (HiDPI + Wayland muammolar oldini olish) ===
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_ENABLE_HIGHDPI_SCALING=1
+export QT_QPA_PLATFORMTHEME=
+unset QT_STYLE_OVERRIDE
+
+# === Browser (foydalanuvchi yordam linkini bosganda) ===
+export BROWSER="${BROWSER:-/usr/local/bin/hacknow-open-url}"
+
+# === XDG (root sifatida ishlasak ham asl userning sozlamalari uchun) ===
+if [ -n "$SUDO_USER" ] && [ -z "$XDG_RUNTIME_DIR" ]; then
+    export XDG_RUNTIME_DIR="/run/user/$(id -u "$SUDO_USER" 2>/dev/null || echo 1000)"
+fi
+
+# === Locale mavjudligini tekshirish ===
+# Agar uz_UZ.UTF-8 hali generate qilinmagan bo'lsa, en_US.UTF-8'ga tushamiz
+if ! locale -a 2>/dev/null | grep -qi "^uz_UZ"; then
+    echo "[hacknow-installer] uz_UZ.UTF-8 locale topilmadi, en_US.UTF-8 ishlatiladi" >&2
+    export LANG="en_US.UTF-8"
+    export LANGUAGE="en:uz:ru"
+    export LC_MESSAGES="en_US.UTF-8"
+fi
+
+# === Calamares'ni majburiy debug rejimisiz ishga tushirish ===
+exec /usr/bin/calamares "$@"

@@ -1,2 +1,9 @@
 # HackNow OS live session — hacknow user'ga parolsiz sudo
+# Installer wrapper orqali ishga tushadi; sudo env'ni tashlab ketmasligi uchun
+# LANG/LANGUAGE/Qt env'larni env_keep ro'yxatiga qo'shamiz.
+
+Defaults!/usr/local/bin/hacknow-installer env_keep += "LANG LANGUAGE LC_ALL LC_MESSAGES LC_TIME LC_NUMERIC LC_MONETARY LC_COLLATE QT_AUTO_SCREEN_SCALE_FACTOR QT_ENABLE_HIGHDPI_SCALING QT_QPA_PLATFORMTHEME BROWSER XDG_RUNTIME_DIR"
+Defaults!/usr/bin/calamares env_keep += "LANG LANGUAGE LC_ALL LC_MESSAGES LC_TIME LC_NUMERIC LC_MONETARY LC_COLLATE QT_AUTO_SCREEN_SCALE_FACTOR QT_ENABLE_HIGHDPI_SCALING QT_QPA_PLATFORMTHEME BROWSER XDG_RUNTIME_DIR"
+
+hacknow ALL=(ALL) NOPASSWD: /usr/local/bin/hacknow-installer
 hacknow ALL=(ALL) NOPASSWD: /usr/bin/calamares
