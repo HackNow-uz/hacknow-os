@@ -4,23 +4,33 @@
 # uchun grub.cfg da /live/vmlinuz va /live/initrd.img placeholder'larini
 # aniqlangan kernel versiyasi bilan almashtiramiz.
 #
-# Bu hook 9500- nomi bilan keyingi pozitsiyada turadi — live-build'ning
-# o'z 0500-symlink-kernel hook'idan keyin ishlaydi, shuning uchun
-# symlinks va versioned fayllar ikkalasi ham binary/live/ ichida bor.
+# Live-build binary hook'larni CWD=<build_root>/binary/ bilan ishlatadi,
+# shuning uchun yo'llar: live/, boot/grub/ (binary/ prefix'siz).
 
 set -e
 
 echo "[fix-grub] boshlandi, CWD=$(pwd)"
-echo "[fix-grub] binary/live/ tarkibi:"
-ls -la binary/live/ 2>/dev/null | head -10 || echo "  (binary/live/ topilmadi)"
 
-# Versioned kernel va initrd nomlarini topish
-VMLINUZ=$(ls binary/live/vmlinuz-*-amd64 2>/dev/null | head -1 | xargs -n1 basename)
-INITRD=$(ls binary/live/initrd.img-*-amd64 2>/dev/null | head -1 | xargs -n1 basename)
+# Versioned kernel va initrd nomlarini topish (CWD = binary/)
+VMLINUZ=""
+INITRD=""
+for f in live/vmlinuz-*-amd64; do
+    if [ -f "$f" ]; then
+        VMLINUZ=$(basename "$f")
+        break
+    fi
+done
+for f in live/initrd.img-*-amd64; do
+    if [ -f "$f" ]; then
+        INITRD=$(basename "$f")
+        break
+    fi
+done
 
 if [ -z "$VMLINUZ" ] || [ -z "$INITRD" ]; then
-    echo "[fix-grub] DIQQAT: kernel topilmadi (VMLINUZ='$VMLINUZ' INITRD='$INITRD')"
-    echo "[fix-grub] Hook o'tkazib yuborildi"
+    echo "[fix-grub] DIQQAT: kernel topilmadi"
+    echo "[fix-grub] live/ tarkibi:"
+    ls -la live/ 2>&1 | head -10
     exit 0
 fi
 
@@ -29,7 +39,7 @@ echo "[fix-grub] Initrd: $INITRD"
 
 # GRUB konfiguratsiyalarida /live/vmlinuz → /live/vmlinuz-X.Y.Z almashtirish
 UPDATED=0
-for cfg in binary/boot/grub/grub.cfg binary/boot/grub/loopback.cfg binary/boot/grub/efi.cfg; do
+for cfg in boot/grub/grub.cfg boot/grub/loopback.cfg boot/grub/efi.cfg; do
     if [ -f "$cfg" ]; then
         sed -i \
             -e "s|/live/vmlinuz\b|/live/${VMLINUZ}|g" \
@@ -39,9 +49,5 @@ for cfg in binary/boot/grub/grub.cfg binary/boot/grub/loopback.cfg binary/boot/g
         UPDATED=$((UPDATED + 1))
     fi
 done
-
-if [ "$UPDATED" -eq 0 ]; then
-    echo "[fix-grub] DIQQAT: hech qaysi grub.cfg topilmadi"
-fi
 
 echo "[fix-grub] tugadi ($UPDATED ta fayl yangilandi)"
