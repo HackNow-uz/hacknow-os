@@ -6,9 +6,9 @@ componentName: hacknow
 strings:
     productName:         "HackNow OS"
     shortProductName:    "HackNow"
-    version:             "0.1.0-alpha"
+    version:             "0.1.0-alpha.2"
     shortVersion:        "0.1.0"
-    versionedName:       "HackNow OS 0.1.0-alpha"
+    versionedName:       "HackNow OS 0.1.0-alpha.2"
     shortVersionedName:  "HackNow 0.1.0"
     bootloaderEntryName: "HackNow OS"
     productUrl:          "https://os.hacknow.uz"
