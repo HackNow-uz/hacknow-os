@@ -1,8 +1,39 @@
-# HackNow OS v0.1.0-alpha — "Birinchi Ishga Tushish"
+# HackNow OS v0.1.0-alpha.2 — "Til va Dizayn"
 
-> **Sana:** 2026-05-15
-> **Kod nomi:** _alpha-preview_
+> **Sana:** 2026-05-26
+> **Asos:** v0.1.0-alpha bilan kompatibel (faqat installer yangilangan, bazaviy tizim o'zgarmagan)
 > **Diqqat:** Bu alpha versiya — sinov uchun. Production yoki real ish uchun emas.
+
+---
+
+## 🆕 v0.1.0-alpha.2 yangiliklari (2026-05-26)
+
+### O'zbek tili installer'da to'liq yoqildi
+
+- Yangi `/usr/local/bin/hacknow-installer` wrapper — `LANG=uz_UZ.UTF-8` muhitini majburiy o'rnatadi
+- `sudoers.d/hacknow-live` ga `env_keep` ro'yxati qo'shildi: LANG, LANGUAGE, LC_*, QT_*, BROWSER
+- Asosiy sabab tuzatildi: `sudo` default'da `LANG` env'ni tashlab ketardi → Qt locale `C`/`en_US` ga tushardi → `.qm` topilsa ham ingliz interfeys
+- Til tanlash menyusida birinchi qator: **O'zbekcha**
+- Tarjima manbalari: `calamares_uz.ts` (882 string upstream) + `branding/uz.ts` (44 brending stringi)
+
+### Calamares brending dizayni v2
+
+- Stylesheet sans-serif (Inter / Noto Sans / DejaVu Sans) — eski monospace UI almashtirildi
+- Sidebar item'larga 12px padding, 8px radius, 3px qizil chap accent border
+- Tugmalarda 8px radius, aniqroq `hover`/`pressed`/`disabled` holatlari
+- Checkbox/radio 18px, custom dropdown strelka, slider stilizatsiya
+- Welcome rasm va asosiy oyna `900x560` o'lchamga sozlandi
+- 5 slaydli slideshow + pastida animatsion slide indikator (250ms width animation)
+- Slideshow mavzulari: Welcome, 63+ asboblar, HackNow platforma, O'zbek tili, Hamjamiyat
+
+### Build pipeline yaxshilanishi
+
+- `sync-installer.sh` Qt6 `lrelease6`/`lrelease-qt6` ham aniqlaydi (avval faqat Qt5)
+- Build-time'da `.qm` kompilyatsiya qilinadi (chroot fallback'siz ham ishlaydi)
+- Chroot hook'da Qt5 va Qt6 lrelease ikkalasi izlanadi
+- `.gitignore` ga `*.qm` qo'shildi (build artefakti)
+
+**Commit:** `f5e852c` — feat(installer): o'zbek tili va dizayn calamares installer'da to'liq yoqildi
 
 ---
 
