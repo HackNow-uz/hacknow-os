@@ -27,14 +27,39 @@ if [ -n "$SUDO_USER" ] && [ -z "$XDG_RUNTIME_DIR" ]; then
     export XDG_RUNTIME_DIR="/run/user/$(id -u "$SUDO_USER" 2>/dev/null || echo 1000)"
 fi
 
-# === Locale mavjudligini tekshirish ===
-# Agar uz_UZ.UTF-8 hali generate qilinmagan bo'lsa, en_US.UTF-8'ga tushamiz
+# === Locale mavjudligini ta'minlash ===
+# live-build'ning standart 1020-create-locales-files hook'i va `locales` paket
+# dpkg-trigger'i locale-archive'ni minimal holatga (C.UTF-8 / en_US) qaytaradi —
+# chroot vaqtida yaratgan uz_UZ.UTF-8'imiz o'chib ketadi. Shuning uchun bu yerda,
+# haqiqiy live sessiyada (root sudo orqali), locale yo'q bo'lsa qayta yaratamiz.
+# glibc manbasi (/usr/share/i18n/locales/uz_UZ) va localedef ISO ichida bor.
 if ! locale -a 2>/dev/null | grep -qi "^uz_UZ"; then
-    echo "[hacknow-installer] uz_UZ.UTF-8 locale topilmadi, en_US.UTF-8 ishlatiladi" >&2
+    echo "[hacknow-installer] uz_UZ.UTF-8 locale topilmadi — yaratilmoqda..." >&2
+    if [ "$(id -u)" = "0" ]; then
+        # 1-usul: localedef (eng to'g'ridan-to'g'ri)
+        localedef -i uz_UZ -c -f UTF-8 -A /usr/share/locale/locale.alias uz_UZ.UTF-8 2>/dev/null
+        # 2-usul: locale-gen (agar localedef ishlamasa)
+        if ! locale -a 2>/dev/null | grep -qi "^uz_UZ"; then
+            if ! grep -q "^uz_UZ.UTF-8" /etc/locale.gen 2>/dev/null; then
+                echo "uz_UZ.UTF-8 UTF-8" >> /etc/locale.gen
+            fi
+            locale-gen uz_UZ.UTF-8 2>/dev/null || locale-gen 2>/dev/null || true
+        fi
+    fi
+fi
+
+# Hali ham yo'q bo'lsa (root emas yoki manba topilmadi) — en_US.UTF-8'ga tushamiz
+if ! locale -a 2>/dev/null | grep -qi "^uz_UZ"; then
+    echo "[hacknow-installer] uz_UZ.UTF-8 yaratib bo'lmadi, en_US.UTF-8 ishlatiladi" >&2
     export LANG="en_US.UTF-8"
     export LANGUAGE="en:uz:ru"
     export LC_MESSAGES="en_US.UTF-8"
+    export LC_TIME="en_US.UTF-8"
+    export LC_MONETARY="en_US.UTF-8"
+    export LC_COLLATE="en_US.UTF-8"
+else
+    echo "[hacknow-installer] uz_UZ.UTF-8 locale tayyor" >&2
 fi
 
-# === Calamares'ni majburiy debug rejimisiz ishga tushirish ===
+# === Calamares'ni ishga tushirish ===
 exec /usr/bin/calamares "$@"
