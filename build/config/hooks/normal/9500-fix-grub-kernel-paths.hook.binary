@@ -1,0 +1,47 @@
+#!/bin/sh
+# HackNow OS — binary stage hook
+# GRUB ISO 9660 da Rock Ridge symlink'larini o'qiya olmaydi, shuning
+# uchun grub.cfg da /live/vmlinuz va /live/initrd.img placeholder'larini
+# aniqlangan kernel versiyasi bilan almashtiramiz.
+#
+# Bu hook 9500- nomi bilan keyingi pozitsiyada turadi — live-build'ning
+# o'z 0500-symlink-kernel hook'idan keyin ishlaydi, shuning uchun
+# symlinks va versioned fayllar ikkalasi ham binary/live/ ichida bor.
+
+set -e
+
+echo "[fix-grub] boshlandi, CWD=$(pwd)"
+echo "[fix-grub] binary/live/ tarkibi:"
+ls -la binary/live/ 2>/dev/null | head -10 || echo "  (binary/live/ topilmadi)"
+
+# Versioned kernel va initrd nomlarini topish
+VMLINUZ=$(ls binary/live/vmlinuz-*-amd64 2>/dev/null | head -1 | xargs -n1 basename)
+INITRD=$(ls binary/live/initrd.img-*-amd64 2>/dev/null | head -1 | xargs -n1 basename)
+
+if [ -z "$VMLINUZ" ] || [ -z "$INITRD" ]; then
+    echo "[fix-grub] DIQQAT: kernel topilmadi (VMLINUZ='$VMLINUZ' INITRD='$INITRD')"
+    echo "[fix-grub] Hook o'tkazib yuborildi"
+    exit 0
+fi
+
+echo "[fix-grub] Kernel: $VMLINUZ"
+echo "[fix-grub] Initrd: $INITRD"
+
+# GRUB konfiguratsiyalarida /live/vmlinuz → /live/vmlinuz-X.Y.Z almashtirish
+UPDATED=0
+for cfg in binary/boot/grub/grub.cfg binary/boot/grub/loopback.cfg binary/boot/grub/efi.cfg; do
+    if [ -f "$cfg" ]; then
+        sed -i \
+            -e "s|/live/vmlinuz\b|/live/${VMLINUZ}|g" \
+            -e "s|/live/initrd\.img\b|/live/${INITRD}|g" \
+            "$cfg"
+        echo "[fix-grub] yangilandi: $cfg"
+        UPDATED=$((UPDATED + 1))
+    fi
+done
+
+if [ "$UPDATED" -eq 0 ]; then
+    echo "[fix-grub] DIQQAT: hech qaysi grub.cfg topilmadi"
+fi
+
+echo "[fix-grub] tugadi ($UPDATED ta fayl yangilandi)"
