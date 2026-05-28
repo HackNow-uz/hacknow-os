@@ -4,6 +4,18 @@
 # sudo env'ni tashlab ketadi, shuning uchun LANG/LANGUAGE/QT env'larni
 # o'zimiz qayta tiklab, Calamares'ni O'zbek tilida ishga tushiramiz.
 
+# === Diagnostic log (debug uchun) ===
+LOG=/tmp/hacknow-installer.log
+{
+    echo "================================================"
+    echo "[$(date '+%H:%M:%S')] hacknow-installer ishga tushdi"
+    echo "  UID=$(id -u)  EUID=$(id -eu)  SUDO_USER=${SUDO_USER:-yo'q}"
+    echo "  Boshlang'ich LANG=${LANG:-bo'sh}"
+    echo "  Boshlang'ich LANGUAGE=${LANGUAGE:-bo'sh}"
+    echo "  Bosh locale -a (faqat uz/en/ru):"
+    locale -a 2>/dev/null | grep -iE '^(uz|en_US|ru_RU)' | sed 's/^/    /'
+} > "$LOG" 2>&1
+
 # === Til ===
 export LANG="${HACKNOW_INSTALLER_LANG:-uz_UZ.UTF-8}"
 export LANGUAGE="${HACKNOW_INSTALLER_LANGUAGE:-uz:en:ru}"
@@ -61,5 +73,20 @@ else
     echo "[hacknow-installer] uz_UZ.UTF-8 locale tayyor" >&2
 fi
 
+# === Yakuniy diagnostic: Calamares'ga qaysi env beriladi ===
+{
+    echo "  Yakuniy LANG=$LANG"
+    echo "  Yakuniy LANGUAGE=$LANGUAGE"
+    echo "  Yakuniy LC_MESSAGES=$LC_MESSAGES"
+    echo "  Yakuniy locale -a (uz/en/ru):"
+    locale -a 2>/dev/null | grep -iE '^(uz|en_US|ru_RU)' | sed 's/^/    /'
+    echo "  .qm fayllar mavjudligi:"
+    [ -f /usr/share/calamares/lang/calamares_uz.qm ] && echo "    ✓ calamares_uz.qm ($(stat -c%s /usr/share/calamares/lang/calamares_uz.qm) bayt)" || echo "    ✗ calamares_uz.qm YO'Q"
+    [ -f /usr/share/calamares/branding/hacknow/uz.qm ] && echo "    ✓ branding/hacknow/uz.qm ($(stat -c%s /usr/share/calamares/branding/hacknow/uz.qm) bayt)" || echo "    ✗ branding/uz.qm YO'Q"
+    echo "  Calamares ishga tushirilmoqda: /usr/bin/calamares $*"
+    echo "================================================"
+} >> "$LOG" 2>&1
+
 # === Calamares'ni ishga tushirish ===
-exec /usr/bin/calamares "$@"
+# Calamares stderr'ini ham log'ga qo'shamiz (.qm yuklashda muammo bo'lsa, shu yerda ko'rinadi)
+exec /usr/bin/calamares "$@" 2>>"$LOG"

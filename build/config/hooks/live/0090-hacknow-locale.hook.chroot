@@ -4,13 +4,17 @@ set -e
 
 echo "[HackNow OS] O'zbek til sozlamalari boshlandi..."
 
-# === O'zbek + Rus klaviatura tartibi (Alt+Shift bilan almashtirish) ===
+# === Klaviatura tartibi: US (default), O'zbek Lotin, Rus, O'zbek Kirill ===
+# XKB'da `uz` standart = kirill, shu sabab `latin` variantni aniq ko'rsatamiz.
+# Tartib: us → uz(latin) → ru → uz (kirill). Alt+Shift bilan aylanma o'tish.
+# Pentest OS uchun US default — terminalda komandalar va kod yozish qulay.
 mkdir -p /etc/default
 cat > /etc/default/keyboard << 'KBD'
 XKBMODEL="pc105"
-XKBLAYOUT="uz,ru"
-XKBVARIANT=","
-XKBOPTIONS="grp:alt_shift_toggle"
+XKBLAYOUT="us,uz,ru,uz"
+XKBVARIANT=",latin,,"
+XKBOPTIONS="grp:alt_shift_toggle,grp_led:scroll"
+BACKSPACE="guess"
 KBD
 
 mkdir -p /etc/X11/xorg.conf.d
@@ -18,13 +22,14 @@ cat > /etc/X11/xorg.conf.d/00-keyboard.conf << 'XKB'
 Section "InputClass"
     Identifier "keyboard-all"
     MatchIsKeyboard "on"
-    Option "XkbLayout" "uz,ru"
-    Option "XkbVariant" ","
-    Option "XkbOptions" "grp:alt_shift_toggle"
+    Option "XkbModel" "pc105"
+    Option "XkbLayout" "us,uz,ru,uz"
+    Option "XkbVariant" ",latin,,"
+    Option "XkbOptions" "grp:alt_shift_toggle,grp_led:scroll"
 EndSection
 XKB
 
-echo "[HackNow OS] Klaviatura: uz,ru (Alt+Shift almashtirish)"
+echo "[HackNow OS] Klaviatura: us, uz(latin), ru, uz(kirill) — Alt+Shift bilan almashtirish"
 
 # === Hunspell O'zbek lug'ati (GitHub'dan) ===
 HUNSPELL_DIR="/usr/share/hunspell"
