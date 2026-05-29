@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Directory
-Name=08 - Reverse Engineering
-Name[uz]=08 - Teskari muhandislik
-Icon=applications-engineering
+Name=Reverse Engineering
+Comment=Reverse Engineering tools
+Icon=hacknow-reverse

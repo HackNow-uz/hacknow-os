@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="key-c" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffeb3b"/>
+      <stop offset="50%" stop-color="#ffc107"/>
+      <stop offset="100%" stop-color="#ff6f00"/>
+    </linearGradient>
+  </defs>
+  <!-- Key head (ring) -->
+  <circle cx="20" cy="20" r="14" fill="none" stroke="url(#key-c)" stroke-width="6"/>
+  <!-- Key shaft -->
+  <rect x="32" y="17" width="26" height="6" rx="1" fill="url(#key-c)" stroke="#7d4f00" stroke-width="1"/>
+  <!-- Key teeth -->
+  <rect x="48" y="23" width="4" height="6" fill="url(#key-c)" stroke="#7d4f00" stroke-width="1"/>
+  <rect x="55" y="23" width="3" height="9" fill="url(#key-c)" stroke="#7d4f00" stroke-width="1"/>
+  <!-- Binary pattern overlay -->
+  <text x="14" y="24" font-family="monospace" font-size="6" font-weight="bold" fill="#3e2723">01</text>
+  <text x="14" y="36" font-family="monospace" font-size="6" font-weight="bold" fill="#3e2723">10</text>
+  <!-- Center cross (cipher symbol) -->
+  <line x1="20" y1="14" x2="20" y2="26" stroke="#7d4f00" stroke-width="0.8" opacity="0.5"/>
+  <line x1="14" y1="20" x2="26" y2="20" stroke="#7d4f00" stroke-width="0.8" opacity="0.5"/>
+  <!-- Highlight -->
+  <circle cx="16" cy="14" r="2" fill="#fff" opacity="0.6"/>
+</svg>

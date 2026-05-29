@@ -2,6 +2,4 @@
 Type=Directory
 Name=Blue Team
 Name[uz]=Ko'k jamoa
-Comment=Defensive security — incident response, forensics
-Comment[uz]=Mudofaa xavfsizligi — incident response, forensika
-Icon=kali-volatility
+Icon=hacknow-blue-team

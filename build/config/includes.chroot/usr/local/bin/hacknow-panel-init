@@ -104,6 +104,9 @@ add_launcher 24 "hacknow-sqlmap.desktop"
 add_launcher 25 "hacknow-hydra.desktop"
 add_launcher 26 "hacknow-wireshark.desktop"
 
+# Icon theme — HackNow-Tools
+xfconf-query -c xsettings -p /Net/IconThemeName --type string --set "HackNow-Tools" --create
+
 # Panel'ni qayta yuklash
 xfce4-panel --restart >/dev/null 2>&1 &
 

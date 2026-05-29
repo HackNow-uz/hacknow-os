@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="gear" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd54f"/>
+      <stop offset="100%" stop-color="#ff6f00"/>
+    </linearGradient>
+  </defs>
+  <!-- Gear shape -->
+  <g transform="translate(32 32)">
+    <g fill="url(#gear)" stroke="#7d4f00" stroke-width="1.5">
+      <!-- 8 teeth using rectangles rotated -->
+      <rect x="-3" y="-26" width="6" height="8" rx="1"/>
+      <rect x="-3" y="-26" width="6" height="8" rx="1" transform="rotate(45)"/>
+      <rect x="-3" y="-26" width="6" height="8" rx="1" transform="rotate(90)"/>
+      <rect x="-3" y="-26" width="6" height="8" rx="1" transform="rotate(135)"/>
+      <rect x="-3" y="-26" width="6" height="8" rx="1" transform="rotate(180)"/>
+      <rect x="-3" y="-26" width="6" height="8" rx="1" transform="rotate(225)"/>
+      <rect x="-3" y="-26" width="6" height="8" rx="1" transform="rotate(270)"/>
+      <rect x="-3" y="-26" width="6" height="8" rx="1" transform="rotate(315)"/>
+    </g>
+    <!-- Gear body -->
+    <circle r="18" fill="url(#gear)" stroke="#7d4f00" stroke-width="2"/>
+    <!-- Inner hole with arrows pointing in (reverse) -->
+    <circle r="9" fill="#3e2723" stroke="#000" stroke-width="1"/>
+    <!-- Reverse arrows -->
+    <path d="M 0 -6 L -3 -2 L 3 -2 Z" fill="#ffd54f"/>
+    <path d="M 0 6 L -3 2 L 3 2 Z" fill="#ffd54f"/>
+    <!-- Tiny "R" letter -->
+    <text x="0" y="2" font-family="monospace" font-size="7" font-weight="bold" fill="#ffd54f" text-anchor="middle">R</text>
+  </g>
+</svg>

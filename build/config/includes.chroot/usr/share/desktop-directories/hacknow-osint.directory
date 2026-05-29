@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Directory
-Name=10 - OSINT
-Name[uz]=10 - Ochiq manba razvedkasi
-Icon=preferences-system-search
+Name=OSINT
+Comment=OSINT tools
+Icon=hacknow-osint

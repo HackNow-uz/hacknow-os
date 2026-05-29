@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Directory
-Name=11 - CTF Tools
-Name[uz]=11 - CTF asboblari
-Icon=applications-games
+Name=CTF Challenges
+Comment=CTF Challenges tools
+Icon=hacknow-ctf

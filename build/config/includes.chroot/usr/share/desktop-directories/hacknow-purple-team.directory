@@ -2,6 +2,4 @@
 Type=Directory
 Name=Purple Team
 Name[uz]=Binafsha jamoa
-Comment=Dual-use — network analysis, monitoring
-Comment[uz]=Ikki tomonlama — tarmoq tahlili, monitoring
-Icon=kali-wireshark
+Icon=hacknow-purple-team

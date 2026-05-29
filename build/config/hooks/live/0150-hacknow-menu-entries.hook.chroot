@@ -6,13 +6,41 @@ set -e
 echo "[HackNow OS] Pentest tool menu yozuvlari yaratilmoqda..."
 
 APPS="/usr/share/applications"
+ICON_THEME="/usr/share/icons"
 COUNT=0
 
-# make_entry cmd name comment category icon comment_uz
+# resolve_icon cmd hint
+# Fallback chain: kali-CMD.svg → hacknow-CMD.png (Parrot) → BlackArch → hint → generic
+resolve_icon() {
+    local cmd="$1" hint="$2"
+    # 1) Kali (Flat-Remix-Blue-Dark scalable apps)
+    if [ -f "$ICON_THEME/Flat-Remix-Blue-Dark/apps/scalable/kali-${cmd}.svg" ]; then
+        echo "kali-${cmd}"; return
+    fi
+    # 2) Parrot-style HackNow-Tools PNG (48x48)
+    if [ -f "$ICON_THEME/HackNow-Tools/48x48/apps/hacknow-${cmd}.png" ]; then
+        echo "hacknow-${cmd}"; return
+    fi
+    # 3) BlackArch convention
+    if [ -f "$ICON_THEME/HackNow-Tools/scalable/apps/blackarch-${cmd}.svg" ]; then
+        echo "blackarch-${cmd}"; return
+    fi
+    # 4) Hint icon (whatever the make_entry caller suggested) if it resolves
+    if [ -n "$hint" ] && [ -f "$ICON_THEME/Flat-Remix-Blue-Dark/apps/scalable/${hint}.svg" ]; then
+        echo "$hint"; return
+    fi
+    # 5) Generic fallback
+    echo "preferences-system-security"
+}
+
+# make_entry cmd name comment category icon_hint comment_uz
 make_entry() {
-    local cmd="$1" name="$2" comment="$3" cat="$4" icon="${5:-utilities-terminal}" comment_uz="$6"
+    local cmd="$1" name="$2" comment="$3" cat="$4" hint="${5:-}" comment_uz="$6"
     command -v "$cmd" >/dev/null 2>&1 || return 0
     [ -f "$APPS/hacknow-${cmd}.desktop" ] && return 0
+
+    local icon
+    icon="$(resolve_icon "$cmd" "$hint")"
 
     cat > "$APPS/hacknow-${cmd}.desktop" << DESKTOP
 [Desktop Entry]
@@ -168,5 +196,13 @@ add_cat "ettercap.desktop" "X-HackNow-Network"
 add_cat "org.keepassxc.KeePassXC.desktop" "X-HackNow-Passwords"
 add_cat "gimp.desktop" "X-HackNow-CTF"
 add_cat "audacity.desktop" "X-HackNow-CTF"
+
+# ═══════════════════════════════════════
+# ICON & DESKTOP DB CACHE
+# ═══════════════════════════════════════
+if [ -d "$ICON_THEME/HackNow-Tools" ]; then
+    gtk-update-icon-cache -f "$ICON_THEME/HackNow-Tools" 2>/dev/null || true
+fi
+update-desktop-database "$APPS" 2>/dev/null || true
 
 echo "[HackNow OS] $COUNT ta tool menu'ga qo'shildi"

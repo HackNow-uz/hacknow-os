@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Directory
-Name=12 - Post Exploitation
-Name[uz]=12 - Post ekspluatatsiya
-Icon=security-high
+Name=Post Exploitation
+Comment=Post Exploitation tools
+Icon=hacknow-privesc

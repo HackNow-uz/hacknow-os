@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Directory
-Name=01 - Information Gathering
-Name[uz]=01 - Ma'lumot to'plash
-Icon=edit-find
+Name=Recon
+Comment=Recon tools
+Icon=hacknow-recon

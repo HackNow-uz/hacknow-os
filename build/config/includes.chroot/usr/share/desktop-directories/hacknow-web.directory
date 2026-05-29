@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Directory
-Name=02 - Vulnerability Analysis
-Name[uz]=02 - Zaiflik tahlili
-Icon=applications-internet
+Name=Web Application
+Comment=Web Application tools
+Icon=hacknow-web
