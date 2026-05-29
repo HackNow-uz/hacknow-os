@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=HackNow Panel Init
+Comment=XFCE panellarini canonical formatda boshlash (BIR MARTA)
+Exec=/usr/local/bin/hacknow-panel-init
+Icon=preferences-desktop
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+X-XFCE-Autostart-Override=true
+OnlyShowIn=XFCE;
