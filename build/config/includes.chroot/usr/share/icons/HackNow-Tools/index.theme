@@ -1,0 +1,30 @@
+[Icon Theme]
+Name=HackNow Tools
+Comment=Penetration testing tool icons (Athena+Parrot+BlackArch+Kali)
+Inherits=Flat-Remix-Blue-Dark,Papirus-Dark,hicolor
+Directories=scalable/apps,48x48/apps,16x16/apps,categories/scalable
+
+[scalable/apps]
+Size=48
+Scale=1
+MinSize=8
+MaxSize=512
+Type=Scalable
+Context=Applications
+
+[48x48/apps]
+Size=48
+Type=Fixed
+Context=Applications
+
+[16x16/apps]
+Size=16
+Type=Fixed
+Context=Applications
+
+[categories/scalable]
+Size=48
+Type=Scalable
+Context=Categories
+MinSize=8
+MaxSize=512
