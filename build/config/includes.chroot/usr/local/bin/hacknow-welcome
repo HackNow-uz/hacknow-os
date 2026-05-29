@@ -1,5 +1,12 @@
 #!/bin/bash
-# HackNow OS — Welcome Wizard
+# HackNow OS — Welcome Wizard (faqat live session uchun)
+
+# === Faqat live session'da ko'rsatish ===
+# O'rnatilgan tizimda welcome chiqmasligi kerak (live USB credential'lari yo'q)
+if ! grep -q "boot=live" /proc/cmdline 2>/dev/null; then
+    exit 0
+fi
+
 
 FLAG="$HOME/.config/hacknow-welcome-shown"
 [ -f "$FLAG" ] && exit 0
