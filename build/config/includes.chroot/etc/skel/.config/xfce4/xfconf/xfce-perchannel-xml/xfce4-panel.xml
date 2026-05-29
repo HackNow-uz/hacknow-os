@@ -101,7 +101,7 @@
       <property name="flat-buttons" type="bool" value="true"/>
       <property name="show-labels" type="bool" value="true"/>
       <property name="show-handle" type="bool" value="false"/>
-      <property name="grouping" type="uint" value="1"/>
+      <property name="grouping" type="uint" value="0"/>
       <property name="show-tooltips" type="bool" value="true"/>
       <property name="window-scrolling" type="bool" value="false"/>
     </property>
