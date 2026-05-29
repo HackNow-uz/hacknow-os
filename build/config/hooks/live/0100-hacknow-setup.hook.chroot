@@ -288,6 +288,14 @@ if [ ! -d "$TPM_DIR" ]; then
         echo "[HackNow OS] TPM offline — keyin install qilinadi"
 fi
 
+
+# === Custom calamares O'zbek tarjimasi bilan (Debian paketidan keyin) ===
+if [ -f /root/debs/calamares-with-uz.deb ]; then
+    echo "[HackNow OS] Custom calamares (uz translation) o'rnatilmoqda..."
+    dpkg -i /root/debs/calamares-with-uz.deb 2>&1 | tail -3 || \
+        apt-get install -fy 2>&1 | tail -3
+fi
+
 # === Calamares installer integratsiyasi ===
 if command -v calamares >/dev/null 2>&1; then
     # Desktop shortcut executable

@@ -14,8 +14,8 @@
     <property name="position" type="string" value="p=6;x=0;y=0"/>
     <property name="length" type="uint" value="100"/>
     <property name="position-locked" type="bool" value="true"/>
-    <property name="icon-size" type="uint" value="16"/>
-    <property name="size" type="uint" value="28"/>
+    <property name="icon-size" type="uint" value="14"/>
+    <property name="size" type="uint" value="24"/>
     <property name="background-style" type="uint" value="1"/>
     <property name="background-rgba" type="array">
       <value type="double" value="0.039"/>
@@ -115,7 +115,7 @@
     <!-- 5: Systray -->
     <property name="plugin-5" type="string" value="systray">
       <property name="square-icons" type="bool" value="true"/>
-      <property name="size-max" type="uint" value="18"/>
+      <property name="size-max" type="uint" value="14"/>
       <property name="symbolic-icons" type="bool" value="true"/>
     </property>
 

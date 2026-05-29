@@ -1,0 +1,32 @@
+#!/bin/sh
+# HackNow OS — post-install keyboard tartibini majburlash
+# Calamares Uzbek tilini tanlasa, default uz(cyrillic) qo'yardi.
+# Bu skript: us (default), uz(latin), ru, uz(cyrillic) tartibini majburlaydi.
+
+cat > /etc/default/keyboard <<EOF
+XKBMODEL="pc105"
+XKBLAYOUT="us,uz,ru,uz"
+XKBVARIANT=",latin,,"
+XKBOPTIONS="grp:alt_shift_toggle,grp_led:scroll"
+BACKSPACE="guess"
+EOF
+
+mkdir -p /etc/X11/xorg.conf.d
+cat > /etc/X11/xorg.conf.d/00-keyboard.conf <<EOF
+Section "InputClass"
+    Identifier "keyboard-all"
+    MatchIsKeyboard "on"
+    Option "XkbModel" "pc105"
+    Option "XkbLayout" "us,uz,ru,uz"
+    Option "XkbVariant" ",latin,,"
+    Option "XkbOptions" "grp:alt_shift_toggle,grp_led:scroll"
+EndSection
+EOF
+
+# console-setup uchun ham
+sed -i 's/^XKBLAYOUT=.*/XKBLAYOUT="us,uz,ru,uz"/' /etc/default/keyboard 2>/dev/null || true
+sed -i 's/^XKBVARIANT=.*/XKBVARIANT=",latin,,"/' /etc/default/keyboard 2>/dev/null || true
+
+# locale tilidan qat'i nazar — agar foydalanuvchi uz_UZ.UTF-8 ham tanlagan bo'lsa,
+# klaviatura US default bo'lib qoladi (chunki XKBLAYOUT birinchi qator us)
+echo "[HackNow OS] Klaviatura: us (default), uz(latin), ru, uz(cyrillic) majburlandi"
