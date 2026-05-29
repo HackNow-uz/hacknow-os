@@ -4,56 +4,52 @@
   <Name>Applications</Name>
   <MergeFile type="parent">/etc/xdg/menus/xfce-applications.menu</MergeFile>
 
-  <!-- HackNow 4 asosiy kategoriya: Red / Blue / Purple Team + CTF -->
   <Menu>
-    <Name>HackNow</Name>
-    <Directory>hacknow-tools.directory</Directory>
-
-    <!-- 🔴 RED TEAM — offensive security -->
-    <Menu>
-      <Name>Red Team</Name>
-      <Directory>hacknow-red-team.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-Recon</Category>
-        <Category>X-HackNow-OSINT</Category>
-        <Category>X-HackNow-Web</Category>
-        <Category>X-HackNow-Exploit</Category>
-        <Category>X-HackNow-Passwords</Category>
-        <Category>X-HackNow-Wireless</Category>
-        <Category>X-HackNow-PrivEsc</Category>
-      </Or></Include>
-    </Menu>
-
-    <!-- 🔵 BLUE TEAM — defensive security -->
-    <Menu>
-      <Name>Blue Team</Name>
-      <Directory>hacknow-blue-team.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-Forensics</Category>
-        <Category>X-HackNow-Defense</Category>
-      </Or></Include>
-    </Menu>
-
-    <!-- 🟣 PURPLE TEAM — dual-use (offense+defense) -->
-    <Menu>
-      <Name>Purple Team</Name>
-      <Directory>hacknow-purple-team.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-Network</Category>
-        <Category>X-HackNow-Purple</Category>
-      </Or></Include>
-    </Menu>
-
-    <!-- 🚩 CTF — capture the flag -->
-    <Menu>
-      <Name>CTF</Name>
-      <Directory>hacknow-ctf-main.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-CTF</Category>
-        <Category>X-HackNow-Crypto</Category>
-        <Category>X-HackNow-Reverse</Category>
-      </Or></Include>
-    </Menu>
-
+    <Name>Red Team</Name>
+    <Directory>hacknow-red-team.directory</Directory>
+    <Menu><Name>Recon</Name><Directory>hacknow-recon.directory</Directory>
+      <Include><Category>X-HackNow-Recon</Category></Include></Menu>
+    <Menu><Name>OSINT</Name><Directory>hacknow-osint.directory</Directory>
+      <Include><Category>X-HackNow-OSINT</Category></Include></Menu>
+    <Menu><Name>Web Application</Name><Directory>hacknow-web.directory</Directory>
+      <Include><Category>X-HackNow-Web</Category></Include></Menu>
+    <Menu><Name>Exploitation</Name><Directory>hacknow-exploit.directory</Directory>
+      <Include><Category>X-HackNow-Exploit</Category></Include></Menu>
+    <Menu><Name>Password Attacks</Name><Directory>hacknow-passwords.directory</Directory>
+      <Include><Category>X-HackNow-Passwords</Category></Include></Menu>
+    <Menu><Name>Wireless</Name><Directory>hacknow-wireless.directory</Directory>
+      <Include><Category>X-HackNow-Wireless</Category></Include></Menu>
+    <Menu><Name>Post Exploitation</Name><Directory>hacknow-privesc.directory</Directory>
+      <Include><Category>X-HackNow-PrivEsc</Category></Include></Menu>
   </Menu>
+
+  <Menu>
+    <Name>Blue Team</Name>
+    <Directory>hacknow-blue-team.directory</Directory>
+    <Menu><Name>Forensics</Name><Directory>hacknow-forensics.directory</Directory>
+      <Include><Category>X-HackNow-Forensics</Category></Include></Menu>
+    <Menu><Name>Defense</Name><Directory>hacknow-blue-team.directory</Directory>
+      <Include><Category>X-HackNow-Defense</Category></Include></Menu>
+  </Menu>
+
+  <Menu>
+    <Name>Purple Team</Name>
+    <Directory>hacknow-purple-team.directory</Directory>
+    <Menu><Name>Network Analysis</Name><Directory>hacknow-network.directory</Directory>
+      <Include><Category>X-HackNow-Network</Category></Include></Menu>
+    <Menu><Name>MITM</Name><Directory>hacknow-purple-team.directory</Directory>
+      <Include><Category>X-HackNow-Purple</Category></Include></Menu>
+  </Menu>
+
+  <Menu>
+    <Name>CTF Tools</Name>
+    <Directory>hacknow-ctf-main.directory</Directory>
+    <Menu><Name>CTF Challenges</Name><Directory>hacknow-ctf.directory</Directory>
+      <Include><Category>X-HackNow-CTF</Category></Include></Menu>
+    <Menu><Name>Cryptography</Name><Directory>hacknow-crypto.directory</Directory>
+      <Include><Category>X-HackNow-Crypto</Category></Include></Menu>
+    <Menu><Name>Reverse Engineering</Name><Directory>hacknow-reverse.directory</Directory>
+      <Include><Category>X-HackNow-Reverse</Category></Include></Menu>
+  </Menu>
+
 </Menu>

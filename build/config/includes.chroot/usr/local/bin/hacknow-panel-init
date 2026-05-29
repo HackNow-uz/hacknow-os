@@ -74,7 +74,7 @@ xfconf-query -c xfce4-panel -p /plugins/plugin-15/display-type --type uint --set
 xfconf-query -c xfce4-panel -p /plugins/plugin-15/display-name --type uint --set 1 --create
 
 # === PANEL-2 (bottom dock with launchers) ===
-xfconf-query -c xfce4-panel -p /panels/panel-2/position --type string --set "p=8;x=0;y=0" --create
+xfconf-query -c xfce4-panel -p /panels/panel-2/position --type string --set "p=10;x=640;y=800" --create
 xfconf-query -c xfce4-panel -p /panels/panel-2/length --type uint --set 1 --create
 xfconf-query -c xfce4-panel -p /panels/panel-2/length-adjust --type bool --set true --create
 xfconf-query -c xfce4-panel -p /panels/panel-2/size --type uint --set 48 --create
@@ -86,8 +86,8 @@ xfconf-query -c xfce4-panel -p /panels/panel-2/background-rgba \
     -t double -t double -t double -t double \
     -s 0.039 -s 0.039 -s 0.039 -s 0.75 -a --create
 xfconf-query -c xfce4-panel -p /panels/panel-2/plugin-ids \
-    -t int -t int -t int -t int -t int -t int -t int -t int \
-    -s 20 -s 21 -s 22 -s 23 -s 24 -s 25 -s 26 -s 27 -a --create
+    -t int -t int -t int -t int -t int -t int -t int \
+    -s 20 -s 21 -s 22 -s 23 -s 24 -s 25 -s 26 -a --create
 
 # Launcher'lar (Panel-2 dock)
 add_launcher() {
@@ -99,11 +99,10 @@ add_launcher() {
 add_launcher 20 "xfce4-terminal.desktop"
 add_launcher 21 "thunar.desktop"
 add_launcher 22 "firefox-esr.desktop"
-add_launcher 23 "code.desktop"
-add_launcher 24 "telegramdesktop.desktop"
-add_launcher 25 "org.atom.Atom.desktop"
-add_launcher 26 "chromium.desktop"
-add_launcher 27 "install-hacknow.desktop"   # live'da o'rnatuvchi
+add_launcher 23 "hacknow-nmap.desktop"
+add_launcher 24 "hacknow-sqlmap.desktop"
+add_launcher 25 "hacknow-hydra.desktop"
+add_launcher 26 "hacknow-wireshark.desktop"
 
 # Panel'ni qayta yuklash
 xfce4-panel --restart >/dev/null 2>&1 &

@@ -1,0 +1,29 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+  "http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
+<Menu>
+  <Name>Xfce</Name>
+  <MergeFile type="parent">/etc/xdg/menus/xfce-applications.menu</MergeFile>
+  <Layout>
+    <Menuname>Red Team</Menuname>
+    <Menuname>Blue Team</Menuname>
+    <Menuname>Purple Team</Menuname>
+    <Menuname>CTF Tools</Menuname>
+    <Separator/>
+    <Menuname>Network</Menuname>
+    <Menuname>System</Menuname>
+    <Menuname>Development</Menuname>
+    <Separator/>
+    <Menuname>Accessories</Menuname>
+    <Menuname>Settings</Menuname>
+    <Separator/>
+    <Menuname>Graphics</Menuname>
+    <Menuname>Multimedia</Menuname>
+    <Menuname>Office</Menuname>
+    <Menuname>Education</Menuname>
+    <Menuname>Games</Menuname>
+    <Separator/>
+    <Menuname>System Services</Menuname>
+    <Merge type="menus"/>
+    <Merge type="files"/>
+  </Layout>
+</Menu>
