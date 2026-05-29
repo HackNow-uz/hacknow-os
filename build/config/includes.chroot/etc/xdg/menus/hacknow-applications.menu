@@ -4,119 +4,54 @@
   <Name>Applications</Name>
   <MergeFile type="parent">/etc/xdg/menus/xfce-applications.menu</MergeFile>
 
-  <!-- Kali uslubi: bitta "HackNow" parent, ichida subkategoriyalar -->
+  <!-- HackNow 4 asosiy kategoriya: Red / Blue / Purple Team + CTF -->
   <Menu>
     <Name>HackNow</Name>
     <Directory>hacknow-tools.directory</Directory>
 
+    <!-- 🔴 RED TEAM — offensive security -->
     <Menu>
-      <Name>01 - Information Gathering</Name>
-      <Directory>hacknow-recon.directory</Directory>
+      <Name>Red Team</Name>
+      <Directory>hacknow-red-team.directory</Directory>
       <Include><Or>
         <Category>X-HackNow-Recon</Category>
-        <Filename>nmap.desktop</Filename>
-        <Filename>masscan.desktop</Filename>
-        <Filename>zenmap.desktop</Filename>
-        <Filename>netdiscover.desktop</Filename>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>02 - Vulnerability Analysis</Name>
-      <Directory>hacknow-web.directory</Directory>
-      <Include><Or>
+        <Category>X-HackNow-OSINT</Category>
         <Category>X-HackNow-Web</Category>
-        <Filename>sqlmap.desktop</Filename>
-        <Filename>nikto.desktop</Filename>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>03 - Exploitation Tools</Name>
-      <Directory>hacknow-exploit.directory</Directory>
-      <Include><Or>
         <Category>X-HackNow-Exploit</Category>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>04 - Password Attacks</Name>
-      <Directory>hacknow-passwords.directory</Directory>
-      <Include><Or>
         <Category>X-HackNow-Passwords</Category>
-        <Filename>john.desktop</Filename>
-        <Filename>hashcat.desktop</Filename>
-        <Filename>hydra.desktop</Filename>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>05 - Network Attacks</Name>
-      <Directory>hacknow-network.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-Network</Category>
-        <Filename>ettercap.desktop</Filename>
-        <Filename>wireshark.desktop</Filename>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>06 - Wireless Attacks</Name>
-      <Directory>hacknow-wireless.directory</Directory>
-      <Include><Or>
         <Category>X-HackNow-Wireless</Category>
-        <Filename>aircrack-ng.desktop</Filename>
+        <Category>X-HackNow-PrivEsc</Category>
       </Or></Include>
     </Menu>
 
+    <!-- 🔵 BLUE TEAM — defensive security -->
     <Menu>
-      <Name>07 - Forensics</Name>
-      <Directory>hacknow-forensics.directory</Directory>
+      <Name>Blue Team</Name>
+      <Directory>hacknow-blue-team.directory</Directory>
       <Include><Or>
         <Category>X-HackNow-Forensics</Category>
-        <Filename>autopsy.desktop</Filename>
-        <Filename>sleuthkit.desktop</Filename>
+        <Category>X-HackNow-Defense</Category>
       </Or></Include>
     </Menu>
 
+    <!-- 🟣 PURPLE TEAM — dual-use (offense+defense) -->
     <Menu>
-      <Name>08 - Reverse Engineering</Name>
-      <Directory>hacknow-reverse.directory</Directory>
+      <Name>Purple Team</Name>
+      <Directory>hacknow-purple-team.directory</Directory>
       <Include><Or>
-        <Category>X-HackNow-Reverse</Category>
-        <Filename>gdb.desktop</Filename>
+        <Category>X-HackNow-Network</Category>
+        <Category>X-HackNow-Purple</Category>
       </Or></Include>
     </Menu>
 
+    <!-- 🚩 CTF — capture the flag -->
     <Menu>
-      <Name>09 - Cryptography</Name>
-      <Directory>hacknow-crypto.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-Crypto</Category>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>10 - OSINT</Name>
-      <Directory>hacknow-osint.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-OSINT</Category>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>11 - CTF Tools</Name>
-      <Directory>hacknow-ctf.directory</Directory>
+      <Name>CTF</Name>
+      <Directory>hacknow-ctf-main.directory</Directory>
       <Include><Or>
         <Category>X-HackNow-CTF</Category>
-      </Or></Include>
-    </Menu>
-
-    <Menu>
-      <Name>12 - Post Exploitation</Name>
-      <Directory>hacknow-privesc.directory</Directory>
-      <Include><Or>
-        <Category>X-HackNow-PrivEsc</Category>
+        <Category>X-HackNow-Crypto</Category>
+        <Category>X-HackNow-Reverse</Category>
       </Or></Include>
     </Menu>
 
