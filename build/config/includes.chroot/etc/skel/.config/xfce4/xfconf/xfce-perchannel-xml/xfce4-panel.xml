@@ -11,7 +11,7 @@
        Minimal: menu | tasklist | ... | tray | vol | clock | power
        ═══════════════════════════════════════════ -->
   <property name="panel-1" type="empty">
-    <property name="position" type="string" value="p=6;x=0;y=0"/>
+    <property name="position" type="string" value="p=2;x=0;y=0"/>
     <property name="length" type="uint" value="100"/>
     <property name="position-locked" type="bool" value="true"/>
     <property name="icon-size" type="uint" value="14"/>
@@ -42,7 +42,7 @@
        Shaffof fon, markazda ikonlar, auto-hide
        ═══════════════════════════════════════════ -->
   <property name="panel-2" type="empty">
-    <property name="position" type="string" value="p=10;x=0;y=0"/>
+    <property name="position" type="string" value="p=8;x=0;y=0"/>
     <property name="length" type="uint" value="1"/>
     <property name="length-adjust" type="bool" value="true"/>
     <property name="position-locked" type="bool" value="true"/>
