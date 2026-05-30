@@ -27,7 +27,7 @@ elementlar `[x]`, hali bajarilmaganlari `[ ]` bilan belgilanadi.
 
 ---
 
-## 🏷️ v0.1.0-alpha.2 — "Til va Dizayn" (IN QA · 2026-05-30)
+## 🏷️ v0.1.0-alpha.2 — "Til va Dizayn" (RELEASED · 2026-05-30)
 
 **Asos:** alpha bilan kompatibel. Asosiy fokus — installer, til, vizual dizayn.
 
@@ -81,8 +81,8 @@ elementlar `[x]`, hali bajarilmaganlari `[ ]` bilan belgilanadi.
 ### QA / Test
 - [x] QEMU live boot test
 - [x] Calamares install muvaffaqiyatli (user 'red' yaratildi)
-- [ ] Yangi ISO'da fresh install + barcha menu/icon tasdiqlash
-- [ ] GitHub release tag v0.1.0-alpha.2
+- [x] Yangi ISO'da fresh install + barcha menu/icon tasdiqlash
+- [x] GitHub release tag v0.1.0-alpha.2
 
 > ISO: `hacknow-os-v0.1.0-alpha.2-amd64.iso` (3.7 GB)  
 > SHA256: `b0bd7a2a37741a07b4b16a2e57cdead006749298e4d60a7616745e79023a97c1`

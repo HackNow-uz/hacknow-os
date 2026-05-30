@@ -1,199 +1,175 @@
 # HackNow OS v0.1.0-alpha.2 — "Til va Dizayn"
 
-> **Sana:** 2026-05-26
-> **Asos:** v0.1.0-alpha bilan kompatibel (faqat installer yangilangan, bazaviy tizim o'zgarmagan)
-> **Diqqat:** Bu alpha versiya — sinov uchun. Production yoki real ish uchun emas.
+> **Sana:** 2026-05-30
+> **Asos:** v0.1.0-alpha (2026-05-15) bilan kompatibel
+> **Diqqat:** Alpha versiya — sinov uchun. Production yoki real ish uchun emas.
+> **ISO:** `hacknow-os-v0.1.0-alpha.2-amd64.iso` (3.7 GiB)
+> **SHA256:** `82bf52ac7b2482981e4341b6455e8a0608e1f93ed05d067111b60d78226a9021`
+> **Yuklab olish:** https://os.hacknow.uz/releases/hacknow-os-v0.1.0-alpha.2-amd64.iso
 
 ---
 
-## 🆕 v0.1.0-alpha.2 yangiliklari (2026-05-26)
+## 🆕 Asosiy yangiliklar
 
-### O'zbek tili installer'da to'liq yoqildi
+### 1. Calamares installer to'liq O'zbek tilida
 
-- Yangi `/usr/local/bin/hacknow-installer` wrapper — `LANG=uz_UZ.UTF-8` muhitini majburiy o'rnatadi
-- `sudoers.d/hacknow-live` ga `env_keep` ro'yxati qo'shildi: LANG, LANGUAGE, LC_*, QT_*, BROWSER
-- Asosiy sabab tuzatildi: `sudo` default'da `LANG` env'ni tashlab ketardi → Qt locale `C`/`en_US` ga tushardi → `.qm` topilsa ham ingliz interfeys
-- Til tanlash menyusida birinchi qator: **O'zbekcha**
-- Tarjima manbalari: `calamares_uz.ts` (882 string upstream) + `branding/uz.ts` (44 brending stringi)
+- **Custom calamares deb** — `lang/calamares_uz.ts` (882 string upstream, 869 tarjima) Qt resource'ga embed qilingan
+- Docker bookworm konteynerda `dpkg-buildpackage` qilingan, `_tx_good` CMake ro'yxatiga `uz` qo'shilgan
+- Welcome dialog: "HackNow OS 0.1.0-alpha.2 o'rnatuvchisiga xush kelibsiz"
+- Sidebar: Xush kelibsiz / Joylashuv / Klaviatura / Bo'limlar / Foydalanuvchilar / Xulosa / O'rnatish / Tugatish
+- Tugmalar: Ortga / Keyingi / Bekor qilish / Bajarildi
+- locale-gen + dpkg-reconfigure + localedef 3 qator fallback
+- Welcome dialog faqat live USB'da (boot=live check + autostart cleanup post-install)
 
-### Calamares brending dizayni v2
+### 2. Branding va dizayn
 
-- Stylesheet sans-serif (Inter / Noto Sans / DejaVu Sans) — eski monospace UI almashtirildi
-- Sidebar item'larga 12px padding, 8px radius, 3px qizil chap accent border
-- Tugmalarda 8px radius, aniqroq `hover`/`pressed`/`disabled` holatlari
-- Checkbox/radio 18px, custom dropdown strelka, slider stilizatsiya
-- Welcome rasm va asosiy oyna `900x560` o'lchamga sozlandi
-- 5 slaydli slideshow + pastida animatsion slide indikator (250ms width animation)
-- Slideshow mavzulari: Welcome, 63+ asboblar, HackNow platforma, O'zbek tili, Hamjamiyat
+- Sidebar 250px keng, #logoApp 150px min-height + AlignTop
+- Custom 280×280 HackNow bolt logo (toza, matnsiz)
+- Stylesheet v2: Inter sans-serif, 8px radius, hover/pressed/disabled holatlar
+- 5 slaydli slideshow + animatsion slide indikator
+- Welcome rasm 900×560 — HackNow OS branded artwork
 
-### Build pipeline yaxshilanishi
+### 3. Icon theme: HackNow-Tools (577 ikon, 4 manba)
 
-- `sync-installer.sh` Qt6 `lrelease6`/`lrelease-qt6` ham aniqlaydi (avval faqat Qt5)
-- Build-time'da `.qm` kompilyatsiya qilinadi (chroot fallback'siz ham ishlaydi)
-- Chroot hook'da Qt5 va Qt6 lrelease ikkalasi izlanadi
-- `.gitignore` ga `*.qm` qo'shildi (build artefakti)
+- **Athena OS** (31 SVG): blueteam, redteam, social, va 26 kategoriya
+- **Kali Linux** (7,143 SVG, 381 kali-* tool ikon): Flat-Remix-Blue-Dark
+- **Parrot Sec** (163 PNG): parrot-menu repo'sidan
+- **BlackArch** (3 SVG): cutter, tor, ostinato
+- **Custom HackNow SVG**: qizil qilich (Red Team), ko'k qalqon (Blue Team), pushti olov (Purple Team), bayroq (CTF)
+- 11 sub-category custom SVG: lupa, ko'z, globe+bug, star burst, lock+key, wifi waves, toj, ...
+- `xsettings Net/IconThemeName = HackNow-Tools` skel + first-login script
 
-**Commit:** `f5e852c` — feat(installer): o'zbek tili va dizayn calamares installer'da to'liq yoqildi
-
----
-
-## ✨ Asosiy yangiliklar
-
-HackNow OS — **O'zbekistonning birinchi pentesting va kiberxavfsizlik distributivi**. Bu birinchi rasmiy alpha versiya.
-
-### 🎨 Vizual
-
-- **HackNow-Dark GTK theme** — qora/qizil (#FF1744) palitra
-- **HackNow xfwm4 theme** — 45 ta custom asset (close/min/max buttons)
-- **Plymouth boot splash** — pulse animatsiya bilan logo
-- **GRUB theme** — qizil HackNow olmos logosi
-- **LightDM login screen** — frosted glass effekt
-- **Wallpapers** — cyberpunk + terminal style (auto-rotate 30min)
-- **Papirus-Dark icons** + **Bibata-Modern-Classic** kursor
-- **Hack Nerd Font** terminal va shell uchun
-
-### 🖥️ Desktop muhit
-
-- **XFCE 4.18** + **Picom compositor** (rounded corners, shadows)
-- **Rofi** app launcher (Super+D)
-- **Tilda** drop-down terminal (F12)
-- **Plank** dock (auto-hide, 5 launcher)
-- **Conky** HUD widget — VPN, Tor, Target, Scope status
-- **Dunst** notifications — qizil accent
-
-### 🐚 Shell tajriba
-
-- **zsh** default + **Starship prompt** (HackNow theme)
-- **tmux** + TPM + resurrect + continuum (15min auto-save)
-- **fzf**, **bat**, **exa**, **ripgrep**, **fd**, **zoxide**, **tldr**, **thefuck**
-- **btop** — HackNow theme
-- Custom aliases — t/td/tk, dl/dt/pt/home, ezsh/etmux
-
-### 🔧 HackNow CLI toollar (12 ta)
+### 4. Menu strukturasi (4 cat + 12 sub)
 
 ```
-hn-info        — System info + HackNow banner
-hn-scope       — Pentest target scope manager
-hn-decode      — Universal decoder (base64/hex/url/rot13/binary)
-hn-hash        — Multi-hash (MD5/SHA1/SHA256/SHA512/NTLM)
-hn-listen      — Netcat listener + IP banner + auto-log
-hn-record      — Screen recording (gif/video)
-hn-screenshot  — Auto timestamp + target naming
-hn-note        — Markdown pentest report template
-hn-update      — System + tools + HackNow update
-hn-vpn         — OpenVPN wrapper (PID file based)
-hn-lab-connect — HackNow Lab integration (API kutilmoqda)
-hn-submit      — CTF flag submission (API kutilmoqda)
+🔴 Red Team
+   ├─ Recon · OSINT · Web Application · Exploitation
+   └─ Password Attacks · Wireless · Post Exploitation
+🔵 Blue Team
+   ├─ Forensics
+   └─ Defense
+🟣 Purple Team
+   ├─ Network Analysis
+   └─ MITM
+🚩 CTF Tools
+   ├─ CTF Challenges · Cryptography · Reverse Engineering
+─────
+Run Program · Terminal · File Manager · Mail · Web Browser
+─────
+Network · System · Development · Accessories · Settings · Graphics · Multimedia · Office · ...
 ```
 
-### 🛠️ Pentest toollar (60+)
+XFCE Layout HackNow yuqorida, system kategoriyalar pastida.
 
-| Kategoriya | Misol toollar |
-|-----------|---------------|
-| Razvedka | nmap, masscan, dnsrecon, dnsenum, nbtscan, smbclient |
-| Web | sqlmap, nikto, dirb, wfuzz, whatweb, wafw00f |
-| Tarmoq | wireshark, ettercap, tcpdump, socat, hping3, mitmproxy |
-| Parol | john, hashcat, hydra, medusa, crunch, cewl |
-| Exploit | python3-impacket, python3-scapy, python3-pwntools |
-| Reverse | gdb, binwalk, foremost, strace, ltrace, xxd |
-| Wireless | aircrack-ng, reaver, pixiewps |
-| Forensics | sleuthkit, dc3dd, testdisk, steghide, exiftool |
-| Kriptografiya | hashid, python3-pycryptodome |
+### 5. Klaviatura
 
-### 🚀 Build pipeline
+- `XKBLAYOUT="us,uz,ru"`, `XKBVARIANT=",latin,"` (uz cyrillic olib tashlandi)
+- US default, Alt+Shift cycle, Scroll LED indicator
+- Calamares shellprocess.conf post-install: `hacknow-fix-keyboard` skript
+- Foydalanuvchi UZ tilini tanlasa ham klaviatura US+uz(latin) bo'lib qoladi
 
-- **Docker-based build** — bir komandada ISO yaratish
-- **GitHub Actions CI** — auto-build push'da
-- **progress.sh** — real-time build progress monitor
-- **qemu-run.sh** — bir komandada QEMU'da test
-- **sync-branding.sh** — branding repo'dan avto sync
+### 6. Tizim sozlamalari
 
-### 🛡️ Xavfsizlik
+- **First-login panel init**: xfconf-query canonical config (XFCE 4.18 duplikat bug fix)
+- Panel-1 (top): size=32, icon=18, 10 plugin (apps menu, tasklist, systray, ...)
+- Panel-2 (bottom dock): autohide, 8 launcher live'da / 7 installed'da
+- Live session = Installed session: bir xil tajriba
+- `tasklist grouping=0` (hamburger 3-chiziq yo'q)
+- Installer dock+Desktop'da live'da, post-install avto-tozalanadi
+- `ssh-keygen -A` post-install (host kalitlar avto)
 
-- SSH **default OFF** (live session'da)
-- Sudo NOPASSWD (live mode)
-- JSON injection fix (hn-lab-connect, hn-submit)
-- MOTD'da warning + default creds info
-- SAST audit + tuzatishlar (C+ grade)
+### 7. Build pipeline yaxshilanishi
+
+- `sync-installer.sh` Qt6 `lrelease6` aniqlash
+- Build-time `.qm` kompilyatsiya
+- `qemu-boot-disk.sh` skripti (qcow2 disk uchun)
+- Auto-deploy: `/var/www/releases/` + SHA256 + GPG imzo + SHA256SUMS yangilash
 
 ---
 
-## 📦 Yuklab olish
+## 🔧 Tuzatilgan muammolar
 
-| Fayl | Hajm | SHA256 |
-|------|------|--------|
-| `hacknow-os-amd64.hybrid.iso` | ~2.5 GB | (build natijasi) |
+| # | Muammo | Yechim |
+|---|--------|--------|
+| 1 | Calamares ingliz tilida ochilardi | Custom deb Qt resource'ga uz embed |
+| 2 | `sudo` LANG env'ni tashlardi | wrapper + sudoers `env_keep` |
+| 3 | locale-archive uz_UZ yo'q edi | 3-fallback (locale-gen → reconfigure → localedef) |
+| 4 | XFCE 4.18 xfconfd duplikat panel-1 | First-login script canonical write |
+| 5 | Klaviatura UZ → kirill | XKBVARIANT="latin" + post-install script |
+| 6 | SSH ishga tushmas (no host keys) | `ssh-keygen -A` post-install |
+| 7 | Welcome dialog installed'da chiqardi | `boot=live` check + autostart cleanup |
+| 8 | Tasklist hamburger ikon | `grouping=0` |
+| 9 | install-debian.desktop Desktop'da | panel-init avto-tozalash |
+| 10 | Calamares til o'rnatildi-yu, Cyrillic | glibc default `uz_UZ` aslida lotin (Bookworm) |
 
-**O'rnatish:**
+---
+
+## ⬇️ Yuklab olish va o'rnatish
+
 ```bash
-# USB ga yozish (Linux)
-sudo dd if=hacknow-os-amd64.hybrid.iso of=/dev/sdX bs=4M status=progress
+# Yuklab olish
+wget https://os.hacknow.uz/releases/hacknow-os-v0.1.0-alpha.2-amd64.iso
 
-# yoki QEMU'da
-qemu-system-x86_64 -cdrom hacknow-os-amd64.hybrid.iso -m 2048 -enable-kvm
+# SHA256 tasdiqlash
+sha256sum hacknow-os-v0.1.0-alpha.2-amd64.iso
+# 82bf52ac7b2482981e4341b6455e8a0608e1f93ed05d067111b60d78226a9021
+
+# GPG imzo tekshirish
+wget https://os.hacknow.uz/releases/hacknow-os-signing-key.asc
+gpg --import hacknow-os-signing-key.asc
+gpg --verify hacknow-os-v0.1.0-alpha.2-amd64.iso.asc hacknow-os-v0.1.0-alpha.2-amd64.iso
+
+# USB ga yozish (REAL hardware)
+sudo dd if=hacknow-os-v0.1.0-alpha.2-amd64.iso of=/dev/sdX bs=4M status=progress oflag=sync
+
+# QEMU'da sinash
+qemu-system-x86_64 -m 4G -smp 4 -enable-kvm \
+    -cdrom hacknow-os-v0.1.0-alpha.2-amd64.iso \
+    -drive file=disk.qcow2,format=qcow2 -boot d -display gtk
 ```
 
-**Login:**
-- User: `hacknow` / Parol: `hacknow`
-- ⚠️ **Birinchi loginda parolni o'zgartiring:** `passwd`
+---
+
+## 🔁 v0.1.0-alpha'dan o'zgarmaganlar
+
+- Asosiy tizim: Debian Bookworm 12 + Linux 6.1
+- 60+ pentest asboblar (nmap, sqlmap, hydra, wireshark, ...)
+- 12 HackNow CLI (hn-info, hn-scope, hn-decode, ...)
+- Plymouth boot splash, GRUB theme, LightDM
+- XFCE 4.18 + Picom + Conky widgets
 
 ---
 
-## 🔧 Tizim talablari
+## 🐛 Ma'lum cheklovlar
 
-| | Minimal | Tavsiya |
-|---|---------|---------|
-| CPU | 2 yadro 64-bit | 4+ yadro |
-| RAM | 2 GB | 8 GB |
-| Disk | 20 GB | 50 GB SSD |
-| Boot | UEFI/BIOS | UEFI |
+- `pwndbg`, `exiftool`, `airodump-ng` — HackNow-Tools temada custom icon yo'q (default ishlatiladi)
+- Sertifikatlangan release imzosi (Code-Sign) hali yo'q — faqat GPG detached signature
+- Wayland session qo'llab-quvvatlanmaydi (faqat X11)
+- Live USB persistence yo'q (alpha.3'ga)
 
 ---
 
-## 🐛 Ma'lum muammolar
+## 📋 Keyingi versiya — v0.1.0-alpha.3 (PLANNED)
 
-- **hn-lab-connect/hn-submit** — backend API hali yo'q (lab.hacknow.uz development)
-- **Picom GLX** — VM'da xrender fallback'ga o'tadi (real HW da GLX ishlaydi)
-- **Online dependencies** — Starship, Nerd Font, Bibata cursor build vaqtida internet kerak
-- **Calamares installer** — hali to'liq integratsiya qilinmagan (Faza 2)
-- **Metasploit, Ghidra, Burp** — hook orqali, lekin minimal rejimda yo'q
+- Plank dock alternatif sifatida
+- LightDM login screen banner + uz
+- GRUB theme uz tilida
+- Conky widgetlar uz tilida
+- Sertifikatlangan release
+- Issue tracker + community feedback
 
----
-
-## 🚀 Keyingi versiyalar
-
-### v0.5-beta (Faza 2 — ~2 oy)
-- 250+ pentesting tool (pip/go hooks)
-- Calamares installer + o'zbek tilida
-- APT repo (apt.hacknow.uz)
-- Oh-my-zsh + powerlevel10k
-
-### v1.0 "Cyber" (Faza 3 — ~4 oy)
-- 500+ tool
-- Hardened kernel
-- Anonimlik rejimi (hn-anon)
-- AI yordamchi (hn-ai)
-- HackNow Platform GUI integratsiya
+To'liq yo'l xaritasi: [ROADMAP.md](./ROADMAP.md)
 
 ---
 
-## 🤝 Hamjamiyat
+## 🙏 Manbalar va litsenziyalar
 
-- **Website:** [hacknow.uz](https://hacknow.uz) | [os.hacknow.uz](https://os.hacknow.uz)
-- **Telegram:** [t.me/hacknow_uz](https://t.me/hacknow_uz)
-- **GitHub:** [github.com/HackNow-uz](https://github.com/HackNow-uz)
-- **Email:** hacknow.uz@gmail.com
+- **Kali Linux themes**: GPL-3.0+ (icon theme: Flat-Remix-Blue-Dark)
+- **Athena OS**: GPL-3.0+ (kategoriya icon'lar)
+- **Parrot Sec parrot-menu**: GPL-3.0+ (tool icon'lar)
+- **BlackArch icons**: custom (3 ta unique)
+- **Papirus icon theme**: GPL-3.0+
+- **Calamares**: GPL-3.0+ (custom deb O'zbek tarjima bilan)
+- **HackNow custom SVG**: MIT (4 cat + 11 sub-cat ikonlar)
 
----
-
-## 📜 Litsenziya
-
-GPL-3.0 — ochiq kodli, har kim hissa qo'shishi mumkin.
-
-> **Muhim:** HackNow OS faqat **qonuniy maqsadlar**, ta'lim va **ruxsat berilgan pentesting** uchun mo'ljallangan. Noqonuniy foydalanish man etiladi.
-
----
-
-**Rise Up! Let the storm, break loose!**
-
-— HackNow Team
+Rahmat HackNow Team va barcha hissa qo'shganlar! 🚀
