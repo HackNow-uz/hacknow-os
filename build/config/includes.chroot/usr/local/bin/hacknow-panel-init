@@ -118,6 +118,10 @@ add_launcher 24 "hacknow-sqlmap.desktop"
 add_launcher 25 "hacknow-hydra.desktop"
 add_launcher 26 "hacknow-wireshark.desktop"
 
+# Desktop'da ortiqcha "install-debian" va calamares default fayllarni tozalash
+# (calamares-settings-debian paketi yaratadigan bo'sh/o'chirilgan fayllar)
+rm -f "$HOME/Desktop/install-debian.desktop" "$HOME/Desktop/calamares.desktop" 2>/dev/null
+
 # Live session'da installer launcher qo'shamiz + Desktop'ga ikon
 if [ "$IS_LIVE" = "1" ]; then
     add_launcher 27 "install-hacknow.desktop"
