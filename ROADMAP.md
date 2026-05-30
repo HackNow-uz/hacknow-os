@@ -85,7 +85,7 @@ elementlar `[x]`, hali bajarilmaganlari `[ ]` bilan belgilanadi.
 - [x] GitHub release tag v0.1.0-alpha.2
 
 > ISO: `hacknow-os-v0.1.0-alpha.2-amd64.iso` (3.7 GB)  
-> SHA256: `b0bd7a2a37741a07b4b16a2e57cdead006749298e4d60a7616745e79023a97c1`
+> SHA256: `82bf52ac7b2482981e4341b6455e8a0608e1f93ed05d067111b60d78226a9021`
 
 ---
 
