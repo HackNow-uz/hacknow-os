@@ -70,8 +70,8 @@ QWidget:disabled {
 #logoApp {
     background-color: #0a0a0a;
     padding: 16px 12px 12px 12px;
-    min-height: 180px;
-    qproperty-alignment: AlignCenter;
+    min-height: 150px;
+    qproperty-alignment: AlignTop | AlignHCenter;
 }
 
 /* === Content area === */
