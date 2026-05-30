@@ -85,9 +85,23 @@ xfconf-query -c xfce4-panel -p /panels/panel-2/background-style --type uint --se
 xfconf-query -c xfce4-panel -p /panels/panel-2/background-rgba \
     -t double -t double -t double -t double \
     -s 0.039 -s 0.039 -s 0.039 -s 0.75 -a --create
-xfconf-query -c xfce4-panel -p /panels/panel-2/plugin-ids \
-    -t int -t int -t int -t int -t int -t int -t int \
-    -s 20 -s 21 -s 22 -s 23 -s 24 -s 25 -s 26 -a --create
+# Live session aniqlash — agar live bo'lsa dock'ga installer qo'shamiz
+IS_LIVE=0
+if grep -q "boot=live" /proc/cmdline 2>/dev/null; then
+    IS_LIVE=1
+fi
+
+if [ "$IS_LIVE" = "1" ]; then
+    # Live'da: 8 launcher (oxirgisi installer)
+    xfconf-query -c xfce4-panel -p /panels/panel-2/plugin-ids \
+        -t int -t int -t int -t int -t int -t int -t int -t int \
+        -s 20 -s 21 -s 22 -s 23 -s 24 -s 25 -s 26 -s 27 -a --create
+else
+    # Installed'da: 7 launcher (installer kerak emas)
+    xfconf-query -c xfce4-panel -p /panels/panel-2/plugin-ids \
+        -t int -t int -t int -t int -t int -t int -t int \
+        -s 20 -s 21 -s 22 -s 23 -s 24 -s 25 -s 26 -a --create
+fi
 
 # Launcher'lar (Panel-2 dock)
 add_launcher() {
@@ -104,11 +118,22 @@ add_launcher 24 "hacknow-sqlmap.desktop"
 add_launcher 25 "hacknow-hydra.desktop"
 add_launcher 26 "hacknow-wireshark.desktop"
 
+# Live session'da installer launcher qo'shamiz + Desktop'ga ikon
+if [ "$IS_LIVE" = "1" ]; then
+    add_launcher 27 "install-hacknow.desktop"
+    mkdir -p "$HOME/Desktop"
+    cp /usr/share/applications/install-hacknow.desktop "$HOME/Desktop/" 2>/dev/null && \
+        chmod +x "$HOME/Desktop/install-hacknow.desktop"
+fi
+
 # Icon theme — HackNow-Tools
 xfconf-query -c xsettings -p /Net/IconThemeName --type string --set "HackNow-Tools" --create
 
 # Panel'ni qayta yuklash
-xfce4-panel --restart >/dev/null 2>&1 &
+# Panel restart — boot vaqtida "--restart" conflict berishi mumkin, shu sabab kill+start
+pkill -9 xfce4-panel 2>/dev/null
+sleep 1
+setsid nohup xfce4-panel >/dev/null 2>&1 < /dev/null &
 
 # Flag yaratish — qayta ishlamasin
 touch "$FLAG"
