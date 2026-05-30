@@ -124,7 +124,10 @@ mkdir -p "$HACKNOW_HOME/.config/xfce4"
 XFCE_VER=$(dpkg -l xfce4-session 2>/dev/null | awk '/^ii/{print $3}' | cut -d. -f1-2)
 XFCE_VER="${XFCE_VER:-4.18}"
 touch "$HACKNOW_HOME/.config/xfce4/.first-start-${XFCE_VER}"
-touch "$HACKNOW_HOME/.config/hacknow-panel-initialized"  # live'da init skript ishlatmaslik
+# Live = installed: hacknow-panel-init script live user'da ham ishlasin
+# (foydalanuvchi live'da o'rnatishdan keyingi tajribani 100% his qila olishi uchun)
+# Eslatma: agar siz live'da panel buzilishidan qo'rqsangiz, quyidagi qatorni yoqing:
+# touch "$HACKNOW_HOME/.config/hacknow-panel-initialized"
 
 # === XFCE channel config'larni xfconfd cache'ga yozish ===
 # Bu XFCE first-login'da bizning config'ni overwrite qilmasligini ta'minlaydi
